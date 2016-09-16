@@ -2412,11 +2412,11 @@ Public Class AutoUpGradeUtility
 
         Try
             '//bText = Encoding.GetEncoding("shift-jis").GetBytes(sText)
-            Dim sByte As String = ""
+            Dim [sByte] As String = ""
             ReDim bText(sText.Length / 2 - 1)
             For iCnt As Integer = 0 To sText.Length - 1 Step 2
-                sByte = sText.Substring(iCnt, 2)
-                bText(iCnt / 2) = Convert.ToByte(sByte, 16)
+                [sByte] = sText.Substring(iCnt, 2)
+                bText(iCnt / 2) = Convert.ToByte([sByte], 16)
             Next
 
             Dim inputStream As MemoryStream = New MemoryStream(bText)
