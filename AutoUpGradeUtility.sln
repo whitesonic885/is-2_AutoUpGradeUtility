@@ -1,0 +1,39 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "AutoUpGradeUtility", "AutoUpGradeUtility.vbproj", "{E5A89430-0334-4499-9A05-E6D804E31231}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "AutoUpGrade", "..\AutoUpgrade\AutoUpGrade.vbproj", "{94152CA0-C7E7-4D32-952D-DD454F4F2DAD}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "AutoUpGradeAdmin", "..\AutoUpGradeAdmin\AutoUpGradeAdmin.vbproj", "{94152CA0-C7E7-4D32-952D-DD454F4F2DAD}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{E5A89430-0334-4499-9A05-E6D804E31231}.Debug.ActiveCfg = Debug|.NET
+		{E5A89430-0334-4499-9A05-E6D804E31231}.Debug.Build.0 = Debug|.NET
+		{E5A89430-0334-4499-9A05-E6D804E31231}.Release.ActiveCfg = Release|.NET
+		{E5A89430-0334-4499-9A05-E6D804E31231}.Release.Build.0 = Release|.NET
+		{94152CA0-C7E7-4D32-952D-DD454F4F2DAD}.Debug.ActiveCfg = Debug|.NET
+		{94152CA0-C7E7-4D32-952D-DD454F4F2DAD}.Debug.Build.0 = Debug|.NET
+		{94152CA0-C7E7-4D32-952D-DD454F4F2DAD}.Release.ActiveCfg = Release|.NET
+		{94152CA0-C7E7-4D32-952D-DD454F4F2DAD}.Release.Build.0 = Release|.NET
+		{94152CA0-C7E7-4D32-952D-DD454F4F2DAD}.Debug.ActiveCfg = Debug|.NET
+		{94152CA0-C7E7-4D32-952D-DD454F4F2DAD}.Debug.Build.0 = Debug|.NET
+		{94152CA0-C7E7-4D32-952D-DD454F4F2DAD}.Release.ActiveCfg = Release|.NET
+		{94152CA0-C7E7-4D32-952D-DD454F4F2DAD}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

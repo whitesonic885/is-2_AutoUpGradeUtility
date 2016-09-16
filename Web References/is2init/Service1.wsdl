@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://Walkthrough/XmlWebServices/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://Walkthrough/XmlWebServices/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://Walkthrough/XmlWebServices/">
+      <s:element name="Set_tanmatsu">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="Set_tanmatsuResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Set_tanmatsuResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Upd_tanmatsu">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Upd_tanmatsuResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Upd_tanmatsuResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Upd_riyou">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Upd_riyouResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Upd_riyouResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_tanmatsu2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey1" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_tanmatsu2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_tanmatsu2Result" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_tanmatsu3">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey1" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_tanmatsu3Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_tanmatsu3Result" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_riyou">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey2" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_riyouResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_riyouResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_seikyu">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey2" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_seikyuResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_seikyuResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="loginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="loginResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_jyotai">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_jyotaiResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_jyotaiResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_syukabi">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey2" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_syukabiResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_syukabiResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_bumon">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey1" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_bumonResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_bumonResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_message">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey2" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_messageResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_messageResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_seigyo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey2" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_seigyoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_seigyoResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_seigyo2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey2" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="iLength" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_seigyo2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_seigyo2Result" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Ins_seigyo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Ins_seigyoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Ins_seigyoResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Upd_seigyo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Upd_seigyoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Upd_seigyoResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="login2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="login2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="login2Result" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Upd_tanmatu">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Upd_tanmatuResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Upd_tanmatuResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="login3">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKey" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="login3Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="login3Result" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_hatuten3">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sKcode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sBcode" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_hatuten3Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_hatuten3Result" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_Kadobi">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sUser" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="sDateStart" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sDateEnd" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Get_KadobiResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Get_KadobiResult" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="wakeupDB">
+        <s:complexType />
+      </s:element>
+      <s:element name="wakeupDBResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="wakeupDBResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="Set_tanmatsuSoapIn">
+    <wsdl:part name="parameters" element="tns:Set_tanmatsu" />
+  </wsdl:message>
+  <wsdl:message name="Set_tanmatsuSoapOut">
+    <wsdl:part name="parameters" element="tns:Set_tanmatsuResponse" />
+  </wsdl:message>
+  <wsdl:message name="Upd_tanmatsuSoapIn">
+    <wsdl:part name="parameters" element="tns:Upd_tanmatsu" />
+  </wsdl:message>
+  <wsdl:message name="Upd_tanmatsuSoapOut">
+    <wsdl:part name="parameters" element="tns:Upd_tanmatsuResponse" />
+  </wsdl:message>
+  <wsdl:message name="Upd_riyouSoapIn">
+    <wsdl:part name="parameters" element="tns:Upd_riyou" />
+  </wsdl:message>
+  <wsdl:message name="Upd_riyouSoapOut">
+    <wsdl:part name="parameters" element="tns:Upd_riyouResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_tanmatsu2SoapIn">
+    <wsdl:part name="parameters" element="tns:Get_tanmatsu2" />
+  </wsdl:message>
+  <wsdl:message name="Get_tanmatsu2SoapOut">
+    <wsdl:part name="parameters" element="tns:Get_tanmatsu2Response" />
+  </wsdl:message>
+  <wsdl:message name="Get_tanmatsu3SoapIn">
+    <wsdl:part name="parameters" element="tns:Get_tanmatsu3" />
+  </wsdl:message>
+  <wsdl:message name="Get_tanmatsu3SoapOut">
+    <wsdl:part name="parameters" element="tns:Get_tanmatsu3Response" />
+  </wsdl:message>
+  <wsdl:message name="Get_riyouSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_riyou" />
+  </wsdl:message>
+  <wsdl:message name="Get_riyouSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_riyouResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_seikyuSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_seikyu" />
+  </wsdl:message>
+  <wsdl:message name="Get_seikyuSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_seikyuResponse" />
+  </wsdl:message>
+  <wsdl:message name="loginSoapIn">
+    <wsdl:part name="parameters" element="tns:login" />
+  </wsdl:message>
+  <wsdl:message name="loginSoapOut">
+    <wsdl:part name="parameters" element="tns:loginResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_jyotaiSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_jyotai" />
+  </wsdl:message>
+  <wsdl:message name="Get_jyotaiSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_jyotaiResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_syukabiSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_syukabi" />
+  </wsdl:message>
+  <wsdl:message name="Get_syukabiSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_syukabiResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_bumonSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_bumon" />
+  </wsdl:message>
+  <wsdl:message name="Get_bumonSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_bumonResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_messageSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_message" />
+  </wsdl:message>
+  <wsdl:message name="Get_messageSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_messageResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_seigyoSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_seigyo" />
+  </wsdl:message>
+  <wsdl:message name="Get_seigyoSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_seigyoResponse" />
+  </wsdl:message>
+  <wsdl:message name="Get_seigyo2SoapIn">
+    <wsdl:part name="parameters" element="tns:Get_seigyo2" />
+  </wsdl:message>
+  <wsdl:message name="Get_seigyo2SoapOut">
+    <wsdl:part name="parameters" element="tns:Get_seigyo2Response" />
+  </wsdl:message>
+  <wsdl:message name="Ins_seigyoSoapIn">
+    <wsdl:part name="parameters" element="tns:Ins_seigyo" />
+  </wsdl:message>
+  <wsdl:message name="Ins_seigyoSoapOut">
+    <wsdl:part name="parameters" element="tns:Ins_seigyoResponse" />
+  </wsdl:message>
+  <wsdl:message name="Upd_seigyoSoapIn">
+    <wsdl:part name="parameters" element="tns:Upd_seigyo" />
+  </wsdl:message>
+  <wsdl:message name="Upd_seigyoSoapOut">
+    <wsdl:part name="parameters" element="tns:Upd_seigyoResponse" />
+  </wsdl:message>
+  <wsdl:message name="login2SoapIn">
+    <wsdl:part name="parameters" element="tns:login2" />
+  </wsdl:message>
+  <wsdl:message name="login2SoapOut">
+    <wsdl:part name="parameters" element="tns:login2Response" />
+  </wsdl:message>
+  <wsdl:message name="Upd_tanmatuSoapIn">
+    <wsdl:part name="parameters" element="tns:Upd_tanmatu" />
+  </wsdl:message>
+  <wsdl:message name="Upd_tanmatuSoapOut">
+    <wsdl:part name="parameters" element="tns:Upd_tanmatuResponse" />
+  </wsdl:message>
+  <wsdl:message name="login3SoapIn">
+    <wsdl:part name="parameters" element="tns:login3" />
+  </wsdl:message>
+  <wsdl:message name="login3SoapOut">
+    <wsdl:part name="parameters" element="tns:login3Response" />
+  </wsdl:message>
+  <wsdl:message name="Get_hatuten3SoapIn">
+    <wsdl:part name="parameters" element="tns:Get_hatuten3" />
+  </wsdl:message>
+  <wsdl:message name="Get_hatuten3SoapOut">
+    <wsdl:part name="parameters" element="tns:Get_hatuten3Response" />
+  </wsdl:message>
+  <wsdl:message name="Get_KadobiSoapIn">
+    <wsdl:part name="parameters" element="tns:Get_Kadobi" />
+  </wsdl:message>
+  <wsdl:message name="Get_KadobiSoapOut">
+    <wsdl:part name="parameters" element="tns:Get_KadobiResponse" />
+  </wsdl:message>
+  <wsdl:message name="wakeupDBSoapIn">
+    <wsdl:part name="parameters" element="tns:wakeupDB" />
+  </wsdl:message>
+  <wsdl:message name="wakeupDBSoapOut">
+    <wsdl:part name="parameters" element="tns:wakeupDBResponse" />
+  </wsdl:message>
+  <wsdl:portType name="Service1Soap">
+    <wsdl:operation name="Set_tanmatsu">
+      <wsdl:input message="tns:Set_tanmatsuSoapIn" />
+      <wsdl:output message="tns:Set_tanmatsuSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Upd_tanmatsu">
+      <wsdl:input message="tns:Upd_tanmatsuSoapIn" />
+      <wsdl:output message="tns:Upd_tanmatsuSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Upd_riyou">
+      <wsdl:input message="tns:Upd_riyouSoapIn" />
+      <wsdl:output message="tns:Upd_riyouSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_tanmatsu2">
+      <wsdl:input message="tns:Get_tanmatsu2SoapIn" />
+      <wsdl:output message="tns:Get_tanmatsu2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_tanmatsu3">
+      <wsdl:input message="tns:Get_tanmatsu3SoapIn" />
+      <wsdl:output message="tns:Get_tanmatsu3SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_riyou">
+      <wsdl:input message="tns:Get_riyouSoapIn" />
+      <wsdl:output message="tns:Get_riyouSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_seikyu">
+      <wsdl:input message="tns:Get_seikyuSoapIn" />
+      <wsdl:output message="tns:Get_seikyuSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="login">
+      <wsdl:input message="tns:loginSoapIn" />
+      <wsdl:output message="tns:loginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_jyotai">
+      <wsdl:input message="tns:Get_jyotaiSoapIn" />
+      <wsdl:output message="tns:Get_jyotaiSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_syukabi">
+      <wsdl:input message="tns:Get_syukabiSoapIn" />
+      <wsdl:output message="tns:Get_syukabiSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_bumon">
+      <wsdl:input message="tns:Get_bumonSoapIn" />
+      <wsdl:output message="tns:Get_bumonSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_message">
+      <wsdl:input message="tns:Get_messageSoapIn" />
+      <wsdl:output message="tns:Get_messageSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_seigyo">
+      <wsdl:input message="tns:Get_seigyoSoapIn" />
+      <wsdl:output message="tns:Get_seigyoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_seigyo2">
+      <wsdl:input message="tns:Get_seigyo2SoapIn" />
+      <wsdl:output message="tns:Get_seigyo2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Ins_seigyo">
+      <wsdl:input message="tns:Ins_seigyoSoapIn" />
+      <wsdl:output message="tns:Ins_seigyoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Upd_seigyo">
+      <wsdl:input message="tns:Upd_seigyoSoapIn" />
+      <wsdl:output message="tns:Upd_seigyoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="login2">
+      <wsdl:input message="tns:login2SoapIn" />
+      <wsdl:output message="tns:login2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Upd_tanmatu">
+      <wsdl:input message="tns:Upd_tanmatuSoapIn" />
+      <wsdl:output message="tns:Upd_tanmatuSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="login3">
+      <wsdl:input message="tns:login3SoapIn" />
+      <wsdl:output message="tns:login3SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_hatuten3">
+      <wsdl:input message="tns:Get_hatuten3SoapIn" />
+      <wsdl:output message="tns:Get_hatuten3SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Kadobi">
+      <wsdl:input message="tns:Get_KadobiSoapIn" />
+      <wsdl:output message="tns:Get_KadobiSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="wakeupDB">
+      <wsdl:input message="tns:wakeupDBSoapIn" />
+      <wsdl:output message="tns:wakeupDBSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="Service1Soap" type="tns:Service1Soap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+    <wsdl:operation name="Set_tanmatsu">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Set_tanmatsu" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Upd_tanmatsu">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Upd_tanmatsu" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Upd_riyou">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Upd_riyou" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_tanmatsu2">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Get_tanmatsu2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_tanmatsu3">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Get_tanmatsu3" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_riyou">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Get_riyou" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_seikyu">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Get_seikyu" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="login">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_jyotai">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Get_jyotai" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_syukabi">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Get_syukabi" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_bumon">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Get_bumon" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_message">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Get_message" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_seigyo">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Get_seigyo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_seigyo2">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Get_seigyo2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Ins_seigyo">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Ins_seigyo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Upd_seigyo">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Upd_seigyo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="login2">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/login2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Upd_tanmatu">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Upd_tanmatu" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="login3">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/login3" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_hatuten3">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Get_hatuten3" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Kadobi">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/Get_Kadobi" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="wakeupDB">
+      <soap:operation soapAction="http://Walkthrough/XmlWebServices/wakeupDB" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service1">
+    <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">is2init</documentation>
+    <wsdl:port name="Service1Soap" binding="tns:Service1Soap">
+      <soap:address location="http://wwwis2.fukutsu.co.jp/is2/is2init/Service1.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
