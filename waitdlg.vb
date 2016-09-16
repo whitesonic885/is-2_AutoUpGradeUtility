@@ -88,54 +88,63 @@ Public Class WaitDialog
 
   ' ShowDialogメソッドのシャドウ（WaitDialogクラスでは、ShowDialogメソッドは使用不可）
   Public Shadows Function ShowDialog() As System.Windows.Forms.DialogResult
-    Debug.Assert(False, _
-     "WaitDialogクラスはShowDialogメソッドを利用できません。" + vbCrLf + _
-     "Showメソッドを使ってモードレス・ダイアログを構築してください。")
-    Return DialogResult.Abort
+        Debug.Assert(False, _
+            "WaitDialogクラスはShowDialogメソッドを利用できません。" + vbCrLf + _
+            "Showメソッドを使ってモードレス・ダイアログを構築してください。")
+        '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+        '//Return DialogResult.Abort
+        Return Windows.Forms.DialogResult.Abort
+        '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
   End Function
 
   ' Showメソッドのシャドウ
   Public Shadows Sub Show()
-    ' 変数の初期化
-    Me.DialogResult = DialogResult.OK
-    Me.bAborting = False
+        ' 変数の初期化
+        '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+        '//Me.DialogResult = DialogResult.OK
+        Me.DialogResult = Windows.Forms.DialogResult.OK
+        '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
+        Me.bAborting = False
 
-    MyBase.Show()
-    Me.bShowing = True
+        MyBase.Show()
+        Me.bShowing = True
   End Sub
 
   ' Closeメソッドのシャドウ
   Public Shadows Sub Close()
-    Me.bShowing = False
-    MyBase.Close()
+        Me.bShowing = False
+        MyBase.Close()
   End Sub
 
   ' キャンセル・ボタンが押されたときの処理
   ' 処理を途中でキャンセル（中断）する。
   Private Sub btnCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    ' 中止処理
-    Abort()
+        ' 中止処理
+        Abort()
   End Sub
 
   ' 中止（キャンセル）処理
   Private Sub Abort()
-    Me.bAborting = True
-    Me.DialogResult = DialogResult.Abort
+        Me.bAborting = True
+        '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+        '//Me.DialogResult = DialogResult.Abort
+        Me.DialogResult = Windows.Forms.DialogResult.Abort
+        '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
   End Sub
 
   ' ダイアログが閉じられるときの処理
   ' 右上の［閉じる］ボタンが押された場合には、
   ' ［キャンセル］ボタンと同じように、処理を途中でキャンセル（中断）する。
   Private Sub WaitDialog_Closing(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
-    If bShowing = True Then
-      ' ダイアログ表示中なので中止（キャンセル）処理を実行
-      Abort()
-      ' まだダイアログは閉じない
-      e.Cancel = True
-    Else
-      ' フォームは閉じられるところので素直に閉じる
-      e.Cancel = False
-    End If
+        If bShowing = True Then
+            ' ダイアログ表示中なので中止（キャンセル）処理を実行
+            Abort()
+            ' まだダイアログは閉じない
+            e.Cancel = True
+        Else
+            ' フォームは閉じられるところので素直に閉じる
+            e.Cancel = False
+        End If
   End Sub
 
   ' **************************************************************

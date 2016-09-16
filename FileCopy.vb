@@ -46,25 +46,33 @@ Public Class FileCopy
 
     End Sub
 
-    Public ReadOnly Property ErrorMesage()
+    '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+    '//Public ReadOnly Property ErrorMesage()
+    Public ReadOnly Property ErrorMesage() As String
+        '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
         Get
             Return _ErrorMessage
         End Get
     End Property
 
-    Public ReadOnly Property PathName()
+    '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+    '//Public ReadOnly Property PathName()
+    Public ReadOnly Property PathName() As String
+        '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
         Get
             Return _PathName
         End Get
     End Property
 
-    Public ReadOnly Property FileName()
+    '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+    '//Public ReadOnly Property FileName()
+    Public ReadOnly Property FileName() As String
+        '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
         Get
             Return _FileName
         End Get
     End Property
 
-    '
     '   指定されたファイルを指定ディレクトリにコピーする
     '       指定ディレクトリが指定されていなければ、ファイル名のチェックのみ
     '       外部から呼出すエントリーポイントになります

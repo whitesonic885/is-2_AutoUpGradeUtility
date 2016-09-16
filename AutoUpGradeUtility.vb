@@ -6,29 +6,30 @@ Imports System.Threading
 Imports System.Text
 Imports System.Security.Cryptography
 
-	'/// <summary>
-	'/// 自動更新アプリ部品[AutoUpGradeUtility.dll]
-	'/// </summary>
-	'//--------------------------------------------------------------------------
-	'// 修正履歴
-	'//--------------------------------------------------------------------------
-	'// ADD 2008.06.11 東都）高木 [conime.exe]の起動 
-	'// ADD 2008.06.11 東都）高木 ログイン画面を常にノーマル表示に 
-	'// ADD 2008.06.11 東都）高木 [CopyAutoUpGrade]を非表示に 
-	'// ADD 2008.06.11 東都）高木 [EXPAND]を非表示に 
-	'//--------------------------------------------------------------------------
-	'// ADD 2009.07.29 東都）高木 プロキシ対応 
-	'// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 
-	'//                           （次期リリース時にはコメントにする）
-	'// ADD 2009.07.30 東都）高木 exeのdll化対応 
-	'// ADD 2009.10.02 東都）高木 ２重起動のチェック 
-	'// ADD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 
-	'// ADD 2009.10.06 東都）高木 パソコンの日付設定簡易チェック 
-	'//--------------------------------------------------------------------------
-	'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 
-	'// MOD 2010.06.21 東都）高木 ログの暗号化解除 
-	'//                           （暗号化を多用すると解読されやすくなる為）
-	'//--------------------------------------------------------------------------
+'/// <summary>
+'/// 自動更新アプリ部品[AutoUpGradeUtility.dll]
+'/// </summary>
+'//--------------------------------------------------------------------------
+'// 修正履歴
+'//--------------------------------------------------------------------------
+'// ADD 2008.06.11 東都）高木 [conime.exe]の起動 
+'// ADD 2008.06.11 東都）高木 ログイン画面を常にノーマル表示に 
+'// ADD 2008.06.11 東都）高木 [CopyAutoUpGrade]を非表示に 
+'// ADD 2008.06.11 東都）高木 [EXPAND]を非表示に 
+'//--------------------------------------------------------------------------
+'// ADD 2009.07.29 東都）高木 プロキシ対応 
+'// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 
+'//                           （次期リリース時にはコメントにする）
+'// ADD 2009.07.30 東都）高木 exeのdll化対応 
+'// ADD 2009.10.02 東都）高木 ２重起動のチェック 
+'// ADD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 
+'// ADD 2009.10.06 東都）高木 パソコンの日付設定簡易チェック 
+'//--------------------------------------------------------------------------
+'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 
+'// MOD 2010.06.21 東都）高木 ログの暗号化解除 
+'//                           （暗号化を多用すると解読されやすくなる為）
+'// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 
+'//--------------------------------------------------------------------------
 Public Class AutoUpGradeUtility
 
     Private _FileName As String
@@ -44,9 +45,11 @@ Public Class AutoUpGradeUtility
     Public waitDlg As WaitDialog
 
 '// ADD 2005.05.31 東都）伊賀 CopyAutoUpGrade対応 START
-    Public _ClientMutex As String
-'// ADD 2005.05.31 東都）伊賀 CopyAutoUpGrade対応 END
-'// ADD 2009.07.29 東都）高木 プロキシ対応 START
+    '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+    Public gClientMutex As String
+    '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
+    '// ADD 2005.05.31 東都）伊賀 CopyAutoUpGrade対応 END
+    '// ADD 2009.07.29 東都）高木 プロキシ対応 START
     Dim gsInitProxy As String = AppDomain.CurrentDomain.BaseDirectory _
              + "\proxy.ini"
     Dim gbInitProxyExists As Boolean = False
@@ -64,15 +67,15 @@ Public Class AutoUpGradeUtility
     Dim giProxyNoAll As Integer = 0
     Dim giConnectTimeOut As Integer = 0
     Dim gProxy As System.Net.WebProxy
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-	Dim gbProxyOnUserSet   As Boolean = False
-	Dim gbProxyIdOnUserSet As Boolean = False
-    Dim gsProxyIdUserSet   As String  = ""
-    Dim gsProxyPaUserSet   As String  = ""
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+    Dim gbProxyOnUserSet As Boolean = False
+    Dim gbProxyIdOnUserSet As Boolean = False
+    Dim gsProxyIdUserSet As String = ""
+    Dim gsProxyPaUserSet As String = ""
+    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
 
     Dim sv_init As is2init.Service1 = Nothing
-'// ADD 2009.07.29 東都）高木 プロキシ対応 END
+    '// ADD 2009.07.29 東都）高木 プロキシ対応 END
 
 #Region "ログ出力"
     Private _myLog As LogWriter = LogWriter.CreateInstance()
@@ -97,7 +100,7 @@ Public Class AutoUpGradeUtility
 
     End Sub
 
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
+    '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
     '
     '   ファイルスタンプの変更
     '
@@ -106,14 +109,14 @@ Public Class AutoUpGradeUtility
 
         Try
             Dim sFullFileName As String = Path.Combine(_DestinationAppPath, sFileName)
-'// MOD 2007.11.28 東都）高木 タイムスタンプの秒比較廃止 START
-'//         Dim sFileStamp As String = _
-'//             sTimeStamp.Substring(0, 4) + "/" + _
-'//             sTimeStamp.Substring(4, 2) + "/" + _
-'//             sTimeStamp.Substring(6, 2) + " " + _
-'//             sTimeStamp.Substring(8, 2) + ":" + _
-'//             sTimeStamp.Substring(10, 2) + ":" + _
-'//             sTimeStamp.Substring(12, 2)
+            '// MOD 2007.11.28 東都）高木 タイムスタンプの秒比較廃止 START
+            '//         Dim sFileStamp As String = _
+            '//             sTimeStamp.Substring(0, 4) + "/" + _
+            '//             sTimeStamp.Substring(4, 2) + "/" + _
+            '//             sTimeStamp.Substring(6, 2) + " " + _
+            '//             sTimeStamp.Substring(8, 2) + ":" + _
+            '//             sTimeStamp.Substring(10, 2) + ":" + _
+            '//             sTimeStamp.Substring(12, 2)
             Dim sFileStamp As String = _
                 sTimeStamp.Substring(0, 4) + "/" + _
                 sTimeStamp.Substring(4, 2) + "/" + _
@@ -121,7 +124,7 @@ Public Class AutoUpGradeUtility
                 sTimeStamp.Substring(8, 2) + ":" + _
                 sTimeStamp.Substring(10, 2) + ":" + _
                 "00"
-'// MOD 2007.11.28 東都）高木 タイムスタンプの秒比較廃止 END
+            '// MOD 2007.11.28 東都）高木 タイムスタンプの秒比較廃止 END
 
             Dim dtFileStamp As Date = Date.Parse(sFileStamp)
             'With _myLogRecord
@@ -263,11 +266,11 @@ Public Class AutoUpGradeUtility
                                 sourceDirName, sFileName)
 
                 'ＣＡＢバージョンファイルの更新日時が新しい時、ＣＡＢファイルをダウンロード
-'// MOD 2007.11.28 東都）高木 タイムスタンプの秒比較廃止 START
-'//         ElseIf File.GetLastWriteTime(srcFullName) > File.GetLastWriteTime(desFullName) Then
+                '// MOD 2007.11.28 東都）高木 タイムスタンプの秒比較廃止 START
+                '//         ElseIf File.GetLastWriteTime(srcFullName) > File.GetLastWriteTime(desFullName) Then
                 'タイムスタンプは、年月日時分まで比較する（秒は比較しない）
             ElseIf File.GetLastWriteTime(srcFullName).ToString("yyyyMMddHHmm") > File.GetLastWriteTime(desFullName).ToString("yyyyMMddHHmm") Then
-'// MOD 2007.11.28 東都）高木 タイムスタンプの秒比較廃止 END
+                '// MOD 2007.11.28 東都）高木 タイムスタンプの秒比較廃止 END
                 'ファイルをダウンロードする
                 DownloadCabFile(srcFullName, desFullName, _
                                 sourceDirName, sFileName)
@@ -292,7 +295,7 @@ Public Class AutoUpGradeUtility
 
         Return True
     End Function
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
+    '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
 
     '
     '   バージョン情報の取得
@@ -304,7 +307,7 @@ Public Class AutoUpGradeUtility
                                  ByVal localExecute As Boolean, _
                                  ByVal logClear As Boolean) As Boolean
 
-'// ADD 2008.06.11 東都）高木 [conime.exe]の起動 START
+        '// ADD 2008.06.11 東都）高木 [conime.exe]の起動 START
         Dim pConIme As New System.Diagnostics.Process
         Try
             With pConIme.StartInfo
@@ -318,11 +321,11 @@ Public Class AutoUpGradeUtility
         Finally
             If Not (pConIme Is Nothing) Then pConIme.Close()
         End Try
-'// ADD 2008.06.11 東都）高木 [conime.exe]の起動 END
+        '// ADD 2008.06.11 東都）高木 [conime.exe]の起動 END
 
         If logClear Then _myLog.Clear()
 
-'// ADD 2009.10.02 東都）高木 ２重起動のチェック START
+        '// ADD 2009.10.02 東都）高木 ２重起動のチェック START
         Dim sCheckExeName As String = ""
         If sourceDirName.EndsWith("/ReleaseAdmin/") Then
             sCheckExeName = "is2AdminClient"
@@ -367,11 +370,16 @@ Public Class AutoUpGradeUtility
             _myLog.WriteLog(_myLogRecord)
             Return False
         End Try
-'// ADD 2009.10.02 東都）高木 ２重起動のチェック END
-'// ADD 2009.10.06 東都）高木 パソコンの日付設定簡易チェック START
+        '// ADD 2009.10.02 東都）高木 ２重起動のチェック END
+        '// ADD 2009.10.06 東都）高木 パソコンの日付設定簡易チェック START
         Dim dtNow As New Date
-        Dim sNow = dtNow.Now.ToString("yyyy/MM/dd")
-        If dtNow.Now.Year < 2009 Then
+        '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+        dtNow = Date.Now
+        'Dim sNow = dtNow.Now.ToString("yyyy/MM/dd")
+        Dim sNow As String = dtNow.ToString("yyyy/MM/dd")
+        'If dtNow.Now.Year < 2009 Then
+        If dtNow.Year < 2009 Then
+            '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
             With _myLogRecord
                 .Target = "パソコンの日付設定に誤りがあります" _
                   & "[" & sNow & "]"
@@ -389,43 +397,43 @@ Public Class AutoUpGradeUtility
 
             Return False
         End If
-'// ADD 2009.10.06 東都）高木 パソコンの日付設定簡易チェック END
+        '// ADD 2009.10.06 東都）高木 パソコンの日付設定簡易チェック END
 
         Dim myRet As Boolean
         waitDlg = New WaitDialog
 
         Try
             Dim myFileCopy As FileCopy = New FileCopy
-'//            Dim myCheckFileName As String = Path.Combine(_DestinationConfigPath, myFileCopy.GetFileName(sourceFileName))
-'//            'パス形式がおかしい
-'//            If Not (localExecute = True And File.Exists(myCheckFileName)) Then
-'//                'コンフィグのダウンロード、DL出来なくても続行する
-'//                myRet = myFileCopy.CopyFile(sourceDirName & sourceFileName & constConfigExt, _DestinationConfigPath)
-'//                With _myLogRecord
-'//                    If myRet Then
-'//                        .Target = sourceDirName & sourceFileName & constConfigExt & "を" & _DestinationConfigPath & "へダウンロードできました"
-'//                        .Result = "OK"
-'//                        .Remark = ""
-'//                    Else
-'//現状、ネットワークとつながっていないと起動できないため
-'//ローカル起動は行わない
-'//                        If myFileCopy.ErrorMesage = WebExceptionStatus.ConnectFailure.ToString() Then
-'//ネットワークエラーはローカル起動にする
-'//                            localExecute = True
-'//                            download = False
-'//                            .Target = sourceDirName & sourceFileName & "をネットワークエラーによりローカル起動に切り替えます"
-'//                            .Result = "OK"
-'//                            .Remark = myFileCopy.ErrorMesage
-'//                        Else
-'//                            .Target = sourceDirName & sourceFileName & constConfigExt & "を" & _DestinationConfigPath & "へダウンロードできません"
-'//                            .Result = "NG"
-'//                            .Remark = myFileCopy.ErrorMesage
-'//                        End If
-'//                    End If
-'//                End With
-'//                _myLog.WriteLog(_myLogRecord)
-'//            End If
-'//            If Not download Then Return True
+            '//            Dim myCheckFileName As String = Path.Combine(_DestinationConfigPath, myFileCopy.GetFileName(sourceFileName))
+            '//            'パス形式がおかしい
+            '//            If Not (localExecute = True And File.Exists(myCheckFileName)) Then
+            '//                'コンフィグのダウンロード、DL出来なくても続行する
+            '//                myRet = myFileCopy.CopyFile(sourceDirName & sourceFileName & constConfigExt, _DestinationConfigPath)
+            '//                With _myLogRecord
+            '//                    If myRet Then
+            '//                        .Target = sourceDirName & sourceFileName & constConfigExt & "を" & _DestinationConfigPath & "へダウンロードできました"
+            '//                        .Result = "OK"
+            '//                        .Remark = ""
+            '//                    Else
+            '//現状、ネットワークとつながっていないと起動できないため
+            '//ローカル起動は行わない
+            '//                        If myFileCopy.ErrorMesage = WebExceptionStatus.ConnectFailure.ToString() Then
+            '//ネットワークエラーはローカル起動にする
+            '//                            localExecute = True
+            '//                            download = False
+            '//                            .Target = sourceDirName & sourceFileName & "をネットワークエラーによりローカル起動に切り替えます"
+            '//                            .Result = "OK"
+            '//                            .Remark = myFileCopy.ErrorMesage
+            '//                        Else
+            '//                            .Target = sourceDirName & sourceFileName & constConfigExt & "を" & _DestinationConfigPath & "へダウンロードできません"
+            '//                            .Result = "NG"
+            '//                            .Remark = myFileCopy.ErrorMesage
+            '//                        End If
+            '//                    End If
+            '//                End With
+            '//                _myLog.WriteLog(_myLogRecord)
+            '//            End If
+            '//            If Not download Then Return True
 
             Dim verCheck As New VersionCheck
             Dim ServerSerializer As New System.Xml.Serialization.XmlSerializer(GetType(VersionCheck.FileVersion()))
@@ -435,20 +443,20 @@ Public Class AutoUpGradeUtility
             Dim ClientVersion() As VersionCheck.FileVersion
             Dim ClientFile As VersionCheck.FileVersion
 
-'// ADD 2005.07.22 東都）小童谷  START
+            '// ADD 2005.07.22 東都）小童谷  START
             Dim appFile As String
             Dim appSize As Integer = 0
-'// ADD 2005.07.22 東都）小童谷  END
+            '// ADD 2005.07.22 東都）小童谷  END
 
             ' 進行状況ダイアログを表示する
             waitDlg.Show()
             ' 進行状況ダイアログの初期化処理
             'waitDlg.Owner = Me ' ダイアログのオーナーを設定
-'// MOD 2005.05.10 東都）高木 メッセージの変更 START
+            '// MOD 2005.05.10 東都）高木 メッセージの変更 START
             '            waitDlg.MainMsg = "バージョンファイルを取得しています……" ' 処理の概要
             '            waitDlg.SubMsg = ""
             waitDlg.MainMsg = "起動準備中です．．．"
-'// MOD 2005.05.10 東都）高木 メッセージの変更 END
+            '// MOD 2005.05.10 東都）高木 メッセージの変更 END
             waitDlg.ProgressMsg = ""
             waitDlg.ProgressMin = 0 ' 処理件数の最小値（0件から開始）
             waitDlg.ProgressStep = 1 ' 何件ごとにメーターを進めるか
@@ -456,7 +464,7 @@ Public Class AutoUpGradeUtility
             waitDlg.Update()
             Dim iCount As Integer = 0   ' 何件目の処理かを示すカウンタ
 
-'// ADD 2009.07.29 東都）高木 プロキシ対応 START
+            '// ADD 2009.07.29 東都）高木 プロキシ対応 START
             '// カレントディレクトリの取得
             gsアプリフォルダ = AppDomain.CurrentDomain.BaseDirectory
             If Not (Directory.Exists(gsアプリフォルダ)) Then
@@ -472,23 +480,23 @@ Public Class AutoUpGradeUtility
             gbInitProxyExists = False
             gsProxyAdrUserSet = ""
             giProxyNoUserSet = 0
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//         giConnectTimeOut = 100  '// 初期値：１００秒
-            giConnectTimeOut   = 50 '// 初期値：５０秒
-	        gbProxyOnUserSet   = False
-	        gbProxyIdOnUserSet = False
-            gsProxyIdUserSet   = ""
-            gsProxyPaUserSet   = ""
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+            '//         giConnectTimeOut = 100  '// 初期値：１００秒
+            giConnectTimeOut = 50 '// 初期値：５０秒
+            gbProxyOnUserSet = False
+            gbProxyIdOnUserSet = False
+            gsProxyIdUserSet = ""
+            gsProxyPaUserSet = ""
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
             Dim sConnectTimeOut As String = ""
             Dim sProxyAdrUserSet As String = ""
             Dim sProxyNoUserSet As String = ""
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-			Dim sProxyOnUserSet   As String = ""
-			Dim sProxyIdOnUserSet As String = ""
-			Dim sProxyIdUserSet   As String = ""
-			Dim sProxyPaUserSet   As String = ""
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+            Dim sProxyOnUserSet As String = ""
+            Dim sProxyIdOnUserSet As String = ""
+            Dim sProxyIdUserSet As String = ""
+            Dim sProxyPaUserSet As String = ""
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
             Dim sr As StreamReader = Nothing
             Try
                 sr = File.OpenText(gsInitProxy)
@@ -496,33 +504,33 @@ Public Class AutoUpGradeUtility
                 sConnectTimeOut = sr.ReadLine()
                 sProxyAdrUserSet = sr.ReadLine()
                 sProxyNoUserSet = sr.ReadLine()
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//				if not(sr is Nothing) then sr.Close()
-                sProxyOnUserSet   = sr.ReadLine()
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                '//				if not(sr is Nothing) then sr.Close()
+                sProxyOnUserSet = sr.ReadLine()
                 sProxyIdOnUserSet = sr.ReadLine()
-                sProxyIdUserSet   = sr.ReadLine()
-                sProxyPaUserSet   = sr.ReadLine()
-                If sConnectTimeOut   Is Nothing Then sConnectTimeOut   = ""
-                If sProxyAdrUserSet  Is Nothing Then sProxyAdrUserSet  = ""
-                If sProxyNoUserSet   Is Nothing Then sProxyNoUserSet   = ""
-                If sProxyOnUserSet   Is Nothing Then sProxyOnUserSet   = ""
+                sProxyIdUserSet = sr.ReadLine()
+                sProxyPaUserSet = sr.ReadLine()
+                If sConnectTimeOut Is Nothing Then sConnectTimeOut = ""
+                If sProxyAdrUserSet Is Nothing Then sProxyAdrUserSet = ""
+                If sProxyNoUserSet Is Nothing Then sProxyNoUserSet = ""
+                If sProxyOnUserSet Is Nothing Then sProxyOnUserSet = ""
                 If sProxyIdOnUserSet Is Nothing Then sProxyIdOnUserSet = ""
-                If sProxyIdUserSet   Is Nothing Then sProxyIdUserSet   = ""
-                If sProxyPaUserSet   Is Nothing Then sProxyPaUserSet   = ""
+                If sProxyIdUserSet Is Nothing Then sProxyIdUserSet = ""
+                If sProxyPaUserSet Is Nothing Then sProxyPaUserSet = ""
 
                 If sProxyIdUserSet.Length > 0 Then
-                    sProxyIdUserSet  = 復号化２(sProxyIdUserSet)
-                    sProxyPaUserSet  = 復号化２(sProxyPaUserSet)
+                    sProxyIdUserSet = 復号化２(sProxyIdUserSet)
+                    sProxyPaUserSet = 復号化２(sProxyPaUserSet)
                 End If
-'//				With _myLogRecord
-'//					.Target = "" _
-'//						& "[" & sProxyIdUserSet & "]" _
-'//						& "[" & sProxyPaUserSet & "]"
-'//					.Result = ""
-'//					.Remark = ""
-'//				End With
-'//				_myLog.WriteLog(_myLogRecord)
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                '//				With _myLogRecord
+                '//					.Target = "" _
+                '//						& "[" & sProxyIdUserSet & "]" _
+                '//						& "[" & sProxyPaUserSet & "]"
+                '//					.Result = ""
+                '//					.Remark = ""
+                '//				End With
+                '//				_myLog.WriteLog(_myLogRecord)
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
             Catch ex As System.IO.FileNotFoundException
                 With _myLogRecord
                     .Target = "プロキシ設定ファイルがみつかりませんでした"
@@ -537,15 +545,15 @@ Public Class AutoUpGradeUtility
                     .Remark = ex.Message
                 End With
                 _myLog.WriteLog(_myLogRecord)
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
             Finally
                 If Not (sr Is Nothing) Then sr.Close()
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
             End Try
 
-'// ADD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 START
+            '// ADD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 START
             If gbInitProxyExists Then
-'// ADD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 END
+                '// ADD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 END
                 Try
                     If sConnectTimeOut.Length > 0 Then
                         If 半角チェック(sConnectTimeOut, "タイムアウト") Then
@@ -566,19 +574,19 @@ Public Class AutoUpGradeUtility
                             End If
                         End If
                     End If
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
                     If 半角チェック(sProxyOnUserSet, "プロキシ設定") Then
-	                    If sProxyOnUserSet.Equals("1") Then
-	                        gbProxyOnUserSet = True
-	                    End If
+                        If sProxyOnUserSet.Equals("1") Then
+                            gbProxyOnUserSet = True
+                        End If
                     End If
                     If sProxyOnUserSet.Length = 0 Then
                         If gsProxyAdrUserSet.Length > 0 Then gbProxyOnUserSet = True
                     End If
                     If 半角チェック(sProxyIdOnUserSet, "プロキシＩＤ設定") Then
-	                    If sProxyIdOnUserSet.Equals("1") Then
-	                        gbProxyIdOnUserSet = True
-	                    End If
+                        If sProxyIdOnUserSet.Equals("1") Then
+                            gbProxyIdOnUserSet = True
+                        End If
                     End If
                     If 半角チェック(sProxyIdUserSet, "ユーザＩＤ") Then
                         gsProxyIdUserSet = sProxyIdUserSet
@@ -586,9 +594,9 @@ Public Class AutoUpGradeUtility
                     If 半角チェック(sProxyPaUserSet, "パスワード") Then
                         gsProxyPaUserSet = sProxyPaUserSet
                     End If
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                 Catch ex As Exception
-'//保留　エラー処理
+                    '//保留　エラー処理
                     With _myLogRecord
                         .Target = "プロキシ設定値ワーニング Exception:"
                         .Result = "NG"
@@ -598,10 +606,10 @@ Public Class AutoUpGradeUtility
                 End Try
 
                 '// プロキシの設定を取得
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//             Dim iRet As Integer = -1
-                Dim wRet As WebExceptionStatus = WebExceptionStatus.UnknownError 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                '//             Dim iRet As Integer = -1
+                Dim wRet As WebExceptionStatus = WebExceptionStatus.UnknownError
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                 ＩＥプロキシ設定情報取得()
 
                 sv_init = New is2init.Service1
@@ -614,32 +622,32 @@ Public Class AutoUpGradeUtility
                 '// プロキシ設定(ユーザ設定)
                 '// （[proxy.ini]設定値）
                 '//--------------------------------------------------------
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//             If iRet <> 1 And gsProxyAdrUserSet.Length > 0 Then
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                '//             If iRet <> 1 And gsProxyAdrUserSet.Length > 0 Then
                 If wRet <> WebExceptionStatus.Success Then
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                     With _myLogRecord
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
-'//                     .Target = "P設定(U)[" & 暗号化２(gsProxyAdrUserSet) _
-'//                         & "][" & 暗号化２(giProxyNoUserSet.ToString("0000")) & "]"
+                        '// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
+                        '//                     .Target = "P設定(U)[" & 暗号化２(gsProxyAdrUserSet) _
+                        '//                         & "][" & 暗号化２(giProxyNoUserSet.ToString("0000")) & "]"
                         .Target = "P設定(U)[" & gsProxyAdrUserSet _
                             & "][" & giProxyNoUserSet.ToString("0000") & "]"
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
+                        '// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
                         .Result = ""
                         .Remark = ""
                     End With
                     _myLog.WriteLog(_myLogRecord)
 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                 iRet = プロキシ設定(gsProxyAdrUserSet, giProxyNoUserSet)
-'//                 If iRet = 1 Then myRet = True
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '//                 iRet = プロキシ設定(gsProxyAdrUserSet, giProxyNoUserSet)
+                    '//                 If iRet = 1 Then myRet = True
                     With _myLogRecord
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
-'//                     .Target = "P_1[" & 暗号化２(gbProxyOnUserSet.ToString()) _
-'//                         & "] P_2[" & 暗号化２(gbProxyIdOnUserSet.ToString()) & "]"
+                        '// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
+                        '//                     .Target = "P_1[" & 暗号化２(gbProxyOnUserSet.ToString()) _
+                        '//                         & "] P_2[" & 暗号化２(gbProxyIdOnUserSet.ToString()) & "]"
                         .Target = "P_1[" & gbProxyOnUserSet.ToString() _
                             & "] P_2[" & gbProxyIdOnUserSet.ToString() & "]"
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
+                        '// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
                         .Result = ""
                         .Remark = ""
                     End With
@@ -656,16 +664,16 @@ Public Class AutoUpGradeUtility
                         wRet = プロキシ設定("", 0) '// プロキシなし接続
                     End If
                     If wRet = WebExceptionStatus.Success Then myRet = True
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                 End If
 
                 '//--------------------------------------------------------
                 '// デフォルトプロキシ設定（以前と同じになるはず）
                 '//--------------------------------------------------------
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//             If iRet <> 1 Then
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                '//             If iRet <> 1 Then
                 If wRet <> WebExceptionStatus.Success Then
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                     With _myLogRecord
                         .Target = "P設定(D)"
                         .Result = ""
@@ -673,59 +681,59 @@ Public Class AutoUpGradeUtility
                     End With
                     _myLog.WriteLog(_myLogRecord)
 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                 iRet = デフォルトプロキシ設定()
-'//                 If iRet = 1 Then myRet = True
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '//                 iRet = デフォルトプロキシ設定()
+                    '//                 If iRet = 1 Then myRet = True
                     wRet = デフォルトプロキシ設定()
                     If wRet = WebExceptionStatus.Success Then myRet = True
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                 End If
 
                 '//--------------------------------------------------------
                 '// プロキシ設定(ＳＳＬ、排除リスト有効)←ベストだと思われる
                 '// （ＩＥのレジストリ設定値）
                 '//--------------------------------------------------------
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//             If iRet <> 1 And gsProxyAdr.Length > 0 Then
-                If wRet <> WebExceptionStatus.Success  And gsProxyAdr.Length > 0Then
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                '//             If iRet <> 1 And gsProxyAdr.Length > 0 Then
+                If wRet <> WebExceptionStatus.Success And gsProxyAdr.Length > 0 Then
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                     With _myLogRecord
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
-'//                     .Target = "P設定(S)[" & 暗号化２(gsProxyAdr) _
-'//                         & "][" & 暗号化２(giProxyNo.ToString("0000")) & "]"
+                        '// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
+                        '//                     .Target = "P設定(S)[" & 暗号化２(gsProxyAdr) _
+                        '//                         & "][" & 暗号化２(giProxyNo.ToString("0000")) & "]"
                         .Target = "P設定(S)[" & gsProxyAdr _
                             & "][" & giProxyNo.ToString("0000") & "]"
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
+                        '// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
                         .Result = ""
                         .Remark = ""
                     End With
                     _myLog.WriteLog(_myLogRecord)
 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                 iRet = プロキシ設定(gsProxyAdr, giProxyNo)
-'//                 If iRet = 1 Then myRet = True
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '//                 iRet = プロキシ設定(gsProxyAdr, giProxyNo)
+                    '//                 If iRet = 1 Then myRet = True
                     wRet = プロキシ設定(gsProxyAdr, giProxyNo)
                     If wRet = WebExceptionStatus.Success Then myRet = True
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                 End If
 
                 '//--------------------------------------------------------
                 '// プロキシ未設定時
                 '//--------------------------------------------------------
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//             If iRet <> 1 Then
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                '//             If iRet <> 1 Then
                 If wRet <> WebExceptionStatus.Success Then
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                 If gsProxyAdrUserSet.Length = 0 And gsProxyAdr.Length = 0 Then
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '//                 If gsProxyAdrUserSet.Length = 0 And gsProxyAdr.Length = 0 Then
                     If gbProxyOnUserSet = False And gsProxyAdrUserSet.Length = 0 And gsProxyAdr.Length = 0 Then
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                         Try
                             Dim sRet As String = sv_init.wakeupDB()
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                         iRet = 1
+                            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                            '//                         iRet = 1
                             wRet = WebExceptionStatus.Success
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                             myRet = True
                         Catch ex As System.Net.WebException
                             With _myLogRecord
@@ -734,22 +742,22 @@ Public Class AutoUpGradeUtility
                                 .Remark = ex.Message
                             End With
                             _myLog.WriteLog(_myLogRecord)
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                         iRet = -1
-'//                         Select Case ex.Status
-'//                             Case WebExceptionStatus.NameResolutionFailure
-'//                                 iRet = -11
-'//                             Case WebExceptionStatus.Timeout
-'//                                 iRet = -12
-'//                             Case WebExceptionStatus.TrustFailure
-'//                                 iRet = -13
-'//                             Case WebExceptionStatus.ConnectFailure
-'//                                 iRet = -14
-'//                             Case Else
-'//                                 iRet = -19
-'//                         End Select
+                            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                            '//                         iRet = -1
+                            '//                         Select Case ex.Status
+                            '//                             Case WebExceptionStatus.NameResolutionFailure
+                            '//                                 iRet = -11
+                            '//                             Case WebExceptionStatus.Timeout
+                            '//                                 iRet = -12
+                            '//                             Case WebExceptionStatus.TrustFailure
+                            '//                                 iRet = -13
+                            '//                             Case WebExceptionStatus.ConnectFailure
+                            '//                                 iRet = -14
+                            '//                             Case Else
+                            '//                                 iRet = -19
+                            '//                         End Select
                             wRet = ex.Status
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                         Catch ex As Exception
                             With _myLogRecord
                                 .Target = "P設定(N) s Exception:"
@@ -757,27 +765,27 @@ Public Class AutoUpGradeUtility
                                 .Remark = ex.Message
                             End With
                             _myLog.WriteLog(_myLogRecord)
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                         iRet = -2
-                            wRet = WebExceptionStatus.UnknownError 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                            '//                         iRet = -2
+                            wRet = WebExceptionStatus.UnknownError
+                            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                         End Try
                         '//--------------------------------------------------------
                         '// 開発機用
                         '//--------------------------------------------------------
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                     If iRet <> 1 Then
+                        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                        '//                     If iRet <> 1 Then
                         If wRet <> WebExceptionStatus.Success Then
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                             Try
                                 sv_init = New is2init.Service1
                                 sv_init.Timeout = 5000 '// 5秒
                                 sv_init.Url = sv_init.Url.Replace("https://", "http://")
                                 Dim sRet As String = sv_init.wakeupDB()
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                             iRet = 1
+                                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                                '//                             iRet = 1
                                 wRet = WebExceptionStatus.Success
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                                 myRet = True
                             Catch ex As System.Net.WebException
                                 With _myLogRecord
@@ -786,22 +794,22 @@ Public Class AutoUpGradeUtility
                                     .Remark = ex.Message
                                 End With
                                 _myLog.WriteLog(_myLogRecord)
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                             iRet = -1
-'//                             Select Case ex.Status
-'//                                 Case WebExceptionStatus.NameResolutionFailure
-'//                                     iRet = -11
-'//                                 Case WebExceptionStatus.Timeout
-'//                                     iRet = -12
-'//                                 Case WebExceptionStatus.TrustFailure
-'//                                     iRet = -13
-'//                                 Case WebExceptionStatus.ConnectFailure
-'//                                     iRet = -14
-'//                                 Case Else
-'//                                     iRet = -19
-'//                             End Select
+                                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                                '//                             iRet = -1
+                                '//                             Select Case ex.Status
+                                '//                                 Case WebExceptionStatus.NameResolutionFailure
+                                '//                                     iRet = -11
+                                '//                                 Case WebExceptionStatus.Timeout
+                                '//                                     iRet = -12
+                                '//                                 Case WebExceptionStatus.TrustFailure
+                                '//                                     iRet = -13
+                                '//                                 Case WebExceptionStatus.ConnectFailure
+                                '//                                     iRet = -14
+                                '//                                 Case Else
+                                '//                                     iRet = -19
+                                '//                             End Select
                                 wRet = ex.Status
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                             Catch ex As Exception
                                 With _myLogRecord
                                     .Target = "P設定(N) _ Exception:"
@@ -810,10 +818,10 @@ Public Class AutoUpGradeUtility
                                 End With
                                 _myLog.WriteLog(_myLogRecord)
                                 myRet = False
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                             iRet = -2
-                                wRet = WebExceptionStatus.UnknownError 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                                '//                             iRet = -2
+                                wRet = WebExceptionStatus.UnknownError
+                                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                             Finally
                                 If giConnectTimeOut > 0 Then
                                     sv_init.Timeout = giConnectTimeOut * 1000
@@ -825,102 +833,105 @@ Public Class AutoUpGradeUtility
 
                 sv_init.Url = sv_init.Url.Replace("http://", "https://")
 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-                Dim iDlgCnt = 0
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//             Do While iRet <> 1
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+                'Dim iDlgCnt = 0
+                Dim iDlgCnt As Integer = 0
+                '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                '//             Do While iRet <> 1
                 Do While wRet <> WebExceptionStatus.Success
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
                     '//--------------------------------------------------------
                     '// 接続エラーメッセージの設定
                     '//--------------------------------------------------------
                     Dim sErrMsg As String = 接続エラーメッセージ編集(wRet)
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                     '//--------------------------------------------------------
                     '// WebExceptionStatus.TrustFailure ＳＳＬ通信の失敗
                     '// （→プロキシの設定ダイアログを表示しない）
                     '//--------------------------------------------------------
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                 If iRet = -13 Then
-'//                     Windows.Forms.MessageBox.Show( _
-'//                      "is2サーバとの通信に失敗しました　　　" & vbCrLf _
-'//                      & "パソコンの日付設定やＳＳＬ通信の設定などを確認してください　　　", _
-'//                      "is2", _
-'//                      Windows.Forms.MessageBoxButtons.OK, _
-'//                      Windows.Forms.MessageBoxIcon.Error)
-'//                     Exit Do
-'//                 End If
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '//                 If iRet = -13 Then
+                    '//                     Windows.Forms.MessageBox.Show( _
+                    '//                      "is2サーバとの通信に失敗しました　　　" & vbCrLf _
+                    '//                      & "パソコンの日付設定やＳＳＬ通信の設定などを確認してください　　　", _
+                    '//                      "is2", _
+                    '//                      Windows.Forms.MessageBoxButtons.OK, _
+                    '//                      Windows.Forms.MessageBoxIcon.Error)
+                    '//                     Exit Do
+                    '//                 End If
                     If wRet = WebExceptionStatus.TrustFailure Then
                         Windows.Forms.MessageBox.Show( _
-                        "サーバー接続エラー（"& sErrMsg &"）　　　　　" & vbCrLf _
+                        "サーバー接続エラー（" & sErrMsg & "）　　　　　" & vbCrLf _
                          & "パソコンの日付設定やＳＳＬ通信の設定などを確認してください　　　　　", _
                          "is2", _
                          Windows.Forms.MessageBoxButtons.OK, _
                          Windows.Forms.MessageBoxIcon.Error)
                         Exit Do
                     End If
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                 '//--------------------------------------------------------
-'//                 '// WebExceptionStatus.ConnectFailure 接続の失敗
-'//                 '// （→プロキシの設定ダイアログを表示しない）
-'//                 '//--------------------------------------------------------
-'//                 If iRet = -14 Then
-'//                     Exit Do
-'//                 End If
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '//                 '//--------------------------------------------------------
+                    '//                 '// WebExceptionStatus.ConnectFailure 接続の失敗
+                    '//                 '// （→プロキシの設定ダイアログを表示しない）
+                    '//                 '//--------------------------------------------------------
+                    '//                 If iRet = -14 Then
+                    '//                     Exit Do
+                    '//                 End If
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                     '//--------------------------------------------------------
                     '// プロキシ設定が３回以上失敗したら終了
                     '//--------------------------------------------------------
                     iDlgCnt += 1
                     If iDlgCnt > 3 Then
                         Windows.Forms.MessageBox.Show( _
-                        "サーバー接続エラー（"& sErrMsg &"）　　　　　" & vbCrLf _
+                        "サーバー接続エラー（" & sErrMsg & "）　　　　　" & vbCrLf _
                          & "プロキシ設定に３回失敗しましたので終了します　　　　　", _
                          "is2", _
                          Windows.Forms.MessageBoxButtons.OK, _
                          Windows.Forms.MessageBoxIcon.Error)
                         Exit Do
                     End If
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                     '//--------------------------------------------------------
                     '// プロキシ設定確認メッセージの表示
                     '//--------------------------------------------------------
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                 Dim dRet As Windows.Forms.DialogResult = Windows.Forms.MessageBox.Show( _
-'//                     "is2サーバとの通信に失敗しました　　　" & vbCrLf _
-'//                     & "プロキシの設定を行いますか？　　　", _
-'//                     "is2", _
-'//                     Windows.Forms.MessageBoxButtons.YesNo, _
-'//                     Windows.Forms.MessageBoxIcon.Question)
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '//                 Dim dRet As Windows.Forms.DialogResult = Windows.Forms.MessageBox.Show( _
+                    '//                     "is2サーバとの通信に失敗しました　　　" & vbCrLf _
+                    '//                     & "プロキシの設定を行いますか？　　　", _
+                    '//                     "is2", _
+                    '//                     Windows.Forms.MessageBoxButtons.YesNo, _
+                    '//                     Windows.Forms.MessageBoxIcon.Question)
                     Dim dRet As Windows.Forms.DialogResult = Windows.Forms.MessageBox.Show( _
-                        "サーバー接続エラー（"& sErrMsg &"）　　　　　" & vbCrLf _
+                        "サーバー接続エラー（" & sErrMsg & "）　　　　　" & vbCrLf _
                         & "プロキシの設定を行いますか？　　　　　", _
                         "is2", _
                         Windows.Forms.MessageBoxButtons.YesNo, _
                         Windows.Forms.MessageBoxIcon.Error)
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                     '[いいえ]ならそのまま終了
                     If dRet = Windows.Forms.DialogResult.No Then Exit Do
                     '//--------------------------------------------------------
                     '// プロキシ設定ダイアログを表示
                     '//--------------------------------------------------------
                     Dim dProxy As New SetProxy
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                 dProxy.sProxyAdr = gsProxyAdr
-'//                 dProxy.sProxyAdrUserSet = gsProxyAdrUserSet
-'//                 dProxy.iProxyNo = giProxyNo
-'//                 dProxy.iProxyNoUserSet = giProxyNoUserSet
-                    dProxy.sProxyAdrUserSet  = gsProxyAdrUserSet
-                    dProxy.iProxyNoUserSet   = giProxyNoUserSet
-                    dProxy.bProxyOnUserSet   = gbProxyOnUserSet
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '//                 dProxy.sProxyAdr = gsProxyAdr
+                    '//                 dProxy.sProxyAdrUserSet = gsProxyAdrUserSet
+                    '//                 dProxy.iProxyNo = giProxyNo
+                    '//                 dProxy.iProxyNoUserSet = giProxyNoUserSet
+                    dProxy.sProxyAdrUserSet = gsProxyAdrUserSet
+                    dProxy.iProxyNoUserSet = giProxyNoUserSet
+                    dProxy.bProxyOnUserSet = gbProxyOnUserSet
                     dProxy.bProxyIdOnUserSet = gbProxyIdOnUserSet
-                    dProxy.sProxyIdUserSet   = gsProxyIdUserSet
-                    dProxy.sProxyPaUserSet   = gsProxyPaUserSet
-                    dProxy.iConnectTimeOut   = giConnectTimeOut
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    dProxy.sProxyIdUserSet = gsProxyIdUserSet
+                    dProxy.sProxyPaUserSet = gsProxyPaUserSet
+                    dProxy.iConnectTimeOut = giConnectTimeOut
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                     dRet = dProxy.ShowDialog()
                     '[いいえ]ならそのまま終了
                     If dRet = Windows.Forms.DialogResult.No Then Exit Do
@@ -929,55 +940,55 @@ Public Class AutoUpGradeUtility
 
                     gsProxyAdrUserSet = dProxy.sProxyAdrUserSet
                     giProxyNoUserSet = dProxy.iProxyNoUserSet
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-                    gbProxyOnUserSet   = dProxy.bProxyOnUserSet
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    gbProxyOnUserSet = dProxy.bProxyOnUserSet
                     gbProxyIdOnUserSet = dProxy.bProxyIdOnUserSet
-                    gsProxyIdUserSet   = dProxy.sProxyIdUserSet
-                    gsProxyPaUserSet   = dProxy.sProxyPaUserSet
-                    giConnectTimeOut   = dProxy.iConnectTimeOut
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    gsProxyIdUserSet = dProxy.sProxyIdUserSet
+                    gsProxyPaUserSet = dProxy.sProxyPaUserSet
+                    giConnectTimeOut = dProxy.iConnectTimeOut
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                     With _myLogRecord
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
-'//                     .Target = "P設定(U)[" & 暗号化２(gsProxyAdrUserSet) _
-'//                         & "][" & 暗号化２(giProxyNoUserSet.ToString("0000")) & "]"
+                        '// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
+                        '//                     .Target = "P設定(U)[" & 暗号化２(gsProxyAdrUserSet) _
+                        '//                         & "][" & 暗号化２(giProxyNoUserSet.ToString("0000")) & "]"
                         .Target = "P設定(U)[" & gsProxyAdrUserSet _
                             & "][" & giProxyNoUserSet.ToString("0000") & "]"
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
+                        '// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
                         .Result = ""
                         .Remark = ""
                     End With
                     _myLog.WriteLog(_myLogRecord)
 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                 '//--------------------------------------------------------
-'//                 '// プロキシ設定ファイル[proxy.ini]の初期化
-'//                 '//--------------------------------------------------------
-'//                 If gsProxyAdrUserSet = "" And giProxyNoUserSet = 0 Then
-'//                     'ファイルの書き込み
-'//                     Dim sw As StreamWriter = Nothing
-'//                     Try
-'//                         'ファイルの書き込み
-'//                         sw = File.CreateText(gsInitProxy)
-'//                         sw.WriteLine("")
-'//                         sw.WriteLine("")
-'//                         sw.WriteLine("")
-'//                         sw.Close()
-'//                     Catch ex As Exception
-'//                         With _myLogRecord
-'//                             .Target = "ファイルの書き込み Exception:"
-'//                             .Result = "NG"
-'//                             .Remark = ex.Message
-'//                         End With
-'//                         _myLog.WriteLog(_myLogRecord)
-'//                         If Not (sw Is Nothing) Then sw.Close()
-'//                         Windows.Forms.MessageBox.Show( _
-'//                          "ファイル[" & gsInitProxy & "]の書き込みに失敗しました　　　" & vbCrLf _
-'//                          & "フォルダに書き込み権限を追加してください　　　", _
-'//                          "is2", _
-'//                          Windows.Forms.MessageBoxButtons.OK, _
-'//                          Windows.Forms.MessageBoxIcon.Error)
-'//                     End Try
-'//                 End If
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '//                 '//--------------------------------------------------------
+                    '//                 '// プロキシ設定ファイル[proxy.ini]の初期化
+                    '//                 '//--------------------------------------------------------
+                    '//                 If gsProxyAdrUserSet = "" And giProxyNoUserSet = 0 Then
+                    '//                     'ファイルの書き込み
+                    '//                     Dim sw As StreamWriter = Nothing
+                    '//                     Try
+                    '//                         'ファイルの書き込み
+                    '//                         sw = File.CreateText(gsInitProxy)
+                    '//                         sw.WriteLine("")
+                    '//                         sw.WriteLine("")
+                    '//                         sw.WriteLine("")
+                    '//                         sw.Close()
+                    '//                     Catch ex As Exception
+                    '//                         With _myLogRecord
+                    '//                             .Target = "ファイルの書き込み Exception:"
+                    '//                             .Result = "NG"
+                    '//                             .Remark = ex.Message
+                    '//                         End With
+                    '//                         _myLog.WriteLog(_myLogRecord)
+                    '//                         If Not (sw Is Nothing) Then sw.Close()
+                    '//                         Windows.Forms.MessageBox.Show( _
+                    '//                          "ファイル[" & gsInitProxy & "]の書き込みに失敗しました　　　" & vbCrLf _
+                    '//                          & "フォルダに書き込み権限を追加してください　　　", _
+                    '//                          "is2", _
+                    '//                          Windows.Forms.MessageBoxButtons.OK, _
+                    '//                          Windows.Forms.MessageBoxIcon.Error)
+                    '//                     End Try
+                    '//                 End If
                     '//--------------------------------------------------------
                     '// プロキシ設定ファイル[proxy.ini]の書き込み
                     '//--------------------------------------------------------
@@ -995,7 +1006,7 @@ Public Class AutoUpGradeUtility
                         Else
                             sw.WriteLine(giProxyNoUserSet.ToString())
                         End If
-	                    If gbProxyOnUserSet Then
+                        If gbProxyOnUserSet Then
                             sw.WriteLine("1")
                         Else
                             sw.WriteLine("0")
@@ -1023,19 +1034,19 @@ Public Class AutoUpGradeUtility
                          Windows.Forms.MessageBoxButtons.OK, _
                          Windows.Forms.MessageBoxIcon.Error)
                     End Try
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                     '//--------------------------------------------------------
                     '// プロキシ設定(ユーザ設定)
                     '//--------------------------------------------------------
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                 iRet = プロキシ設定(gsProxyAdrUserSet, giProxyNoUserSet)
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '//                 iRet = プロキシ設定(gsProxyAdrUserSet, giProxyNoUserSet)
                     With _myLogRecord
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
-'//                     .Target = "P_1[" & 暗号化２(gbProxyOnUserSet.ToString()) _
-'//                         & "] P_2[" & 暗号化２(gbProxyIdOnUserSet.ToString()) & "]"
+                        '// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
+                        '//                     .Target = "P_1[" & 暗号化２(gbProxyOnUserSet.ToString()) _
+                        '//                         & "] P_2[" & 暗号化２(gbProxyIdOnUserSet.ToString()) & "]"
                         .Target = "P_1[" & gbProxyOnUserSet.ToString() _
                             & "] P_2[" & gbProxyIdOnUserSet.ToString() & "]"
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
+                        '// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
                         .Result = ""
                         .Remark = ""
                     End With
@@ -1051,64 +1062,69 @@ Public Class AutoUpGradeUtility
                     Else
                         wRet = プロキシ設定("", 0)
                     End If
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                 If iRet = 1 Then myRet = True
-'//                 If iRet = 1 Then
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                    '//                 If iRet = 1 Then myRet = True
+                    '//                 If iRet = 1 Then
                     If wRet = WebExceptionStatus.Success Then
                         myRet = True
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                         gsProxyAdr = gsProxyAdrUserSet
                         giProxyNo = giProxyNoUserSet
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                     'ファイルの書き込み
-'//                     Dim sw As StreamWriter = Nothing
-'//                     Try
-'//                         'ファイルの書き込み
-'//                         sw = File.CreateText(gsInitProxy)
-'//タイムアウト
-'//                         If giConnectTimeOut = 0 Then
-'//                             sw.WriteLine("")
-'//                         Else
-'//                             sw.WriteLine(giConnectTimeOut.ToString())
-'//                         End If
-'//                         sw.WriteLine(gsProxyAdrUserSet)
-'//                         If giProxyNoUserSet = 0 Then
-'//                             sw.WriteLine("")
-'//                         Else
-'//                            sw.WriteLine(giProxyNoUserSet.ToString())
-'//                         End If
-'//                         sw.Close()
-'//                     Catch ex As Exception
-'//                         With _myLogRecord
-'//                             .Target = "ファイルの書き込み Exception:"
-'//                             .Result = "NG"
-'//                             .Remark = ex.Message
-'//                         End With
-'//                         _myLog.WriteLog(_myLogRecord)
-'//                         If Not (sw Is Nothing) Then sw.Close()
-'//                         Windows.Forms.MessageBox.Show( _
-'//                          "ファイル[" & gsInitProxy & "]の書き込みに失敗しました　　　" & vbCrLf _
-'//                          & "フォルダに書き込み権限を追加してください　　　", _
-'//                          "is2", _
-'//                          Windows.Forms.MessageBoxButtons.OK, _
-'//                          Windows.Forms.MessageBoxIcon.Error)
-'//                     End Try
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                        '//                     'ファイルの書き込み
+                        '//                     Dim sw As StreamWriter = Nothing
+                        '//                     Try
+                        '//                         'ファイルの書き込み
+                        '//                         sw = File.CreateText(gsInitProxy)
+                        '//タイムアウト
+                        '//                         If giConnectTimeOut = 0 Then
+                        '//                             sw.WriteLine("")
+                        '//                         Else
+                        '//                             sw.WriteLine(giConnectTimeOut.ToString())
+                        '//                         End If
+                        '//                         sw.WriteLine(gsProxyAdrUserSet)
+                        '//                         If giProxyNoUserSet = 0 Then
+                        '//                             sw.WriteLine("")
+                        '//                         Else
+                        '//                            sw.WriteLine(giProxyNoUserSet.ToString())
+                        '//                         End If
+                        '//                         sw.Close()
+                        '//                     Catch ex As Exception
+                        '//                         With _myLogRecord
+                        '//                             .Target = "ファイルの書き込み Exception:"
+                        '//                             .Result = "NG"
+                        '//                             .Remark = ex.Message
+                        '//                         End With
+                        '//                         _myLog.WriteLog(_myLogRecord)
+                        '//                         If Not (sw Is Nothing) Then sw.Close()
+                        '//                         Windows.Forms.MessageBox.Show( _
+                        '//                          "ファイル[" & gsInitProxy & "]の書き込みに失敗しました　　　" & vbCrLf _
+                        '//                          & "フォルダに書き込み権限を追加してください　　　", _
+                        '//                          "is2", _
+                        '//                          Windows.Forms.MessageBoxButtons.OK, _
+                        '//                          Windows.Forms.MessageBoxIcon.Error)
+                        '//                     End Try
+                        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                         Exit Do
                     End If
                 Loop
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//             If iRet <> 1 Then
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                '//             If iRet <> 1 Then
                 If wRet <> WebExceptionStatus.Success Then
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
                     Return False
                 End If
                 sv_init.Timeout = 100 * 1000 '// デフォルト値の１００秒
-'// ADD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 START
+                '// ADD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 START
             End If
-'// ADD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 END
-'// ADD 2009.07.29 東都）高木 プロキシ対応 END
+            '// ADD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 END
+            '// ADD 2009.07.29 東都）高木 プロキシ対応 END
+
+            '// ADD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+            ServerVersion = Nothing
+            ClientVersion = Nothing
+            '// ADD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
 
             'サーバーのバージョン情報の取得
             myRet = verCheck.XmlReadServer(sourceDirName, _DestinationConfigPath, ServerSerializer, ServerVersion)
@@ -1118,10 +1134,10 @@ Public Class AutoUpGradeUtility
             Dim cntRet As Boolean
             cntRet = verCheck.XmlReadClient(Path.Combine(_DestinationPath, "VersionFile.xml"), ClientSerializer, ClientVersion)
 
-'// MOD 2005.05.10 東都）高木 メッセージの変更 START
-'//         waitDlg.MainMsg = "ファイルを転送しています……" ' 処理の概要
+            '// MOD 2005.05.10 東都）高木 メッセージの変更 START
+            '//         waitDlg.MainMsg = "ファイルを転送しています……" ' 処理の概要
             waitDlg.MainMsg = "しばらくお待ちください。．．．"
-'// MOD 2005.05.10 東都）高木 メッセージの変更 END
+            '// MOD 2005.05.10 東都）高木 メッセージの変更 END
             waitDlg.ProgressMax = ServerVersion.Length ' 全体の処理件数
             Dim verRet As Boolean
             For Each ServerFile In ServerVersion
@@ -1130,9 +1146,9 @@ Public Class AutoUpGradeUtility
                     Return False
                 End If
 
-'// DEL 2005.05.10 東都）高木 メッセージの変更 START
-'//              waitDlg.SubMsg = ServerFile.FileName
-'// DEL 2005.05.10 東都）高木 メッセージの変更 END
+                '// DEL 2005.05.10 東都）高木 メッセージの変更 START
+                '//              waitDlg.SubMsg = ServerFile.FileName
+                '// DEL 2005.05.10 東都）高木 メッセージの変更 END
                 ' 進行状況ダイアログのメーターを設定
                 waitDlg.ProgressMsg = _
                 (CType((iCount * 100 / ServerVersion.Length), Integer)).ToString() & "%　" _
@@ -1150,7 +1166,10 @@ Public Class AutoUpGradeUtility
                 End With
 
                 'ダウンロードディレクトリの設定
-                Dim FileDirLength = ServerFile.FileName.Replace("\", "/").LastIndexOf("/")
+                '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+                '// Dim FileDirLength = ServerFile.FileName.Replace("\", "/").LastIndexOf("/")
+                Dim FileDirLength As String = ServerFile.FileName.Replace("\", "/").LastIndexOf("/")
+                '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
                 Dim FileDir As String = ""
                 If FileDirLength <> -1 Then
                     FileDir = "/" & ServerFile.FileName.Substring(0, ServerFile.FileName.Replace("\", "/").LastIndexOf("/"))
@@ -1163,27 +1182,27 @@ Public Class AutoUpGradeUtility
                     'クライアントにバージョンファイルがある場合は最新のみダウンロード
                     For Each ClientFile In ClientVersion
                         If ServerFile.FileName.Equals(ClientFile.FileName) Then
-'// MOD 2007.11.28 東都）高木 タイムスタンプの秒比較廃止 START
-'//                         If ServerFile.TimeStamp > ClientFile.TimeStamp Or ServerFile.Size <> ClientFile.Size Then
+                            '// MOD 2007.11.28 東都）高木 タイムスタンプの秒比較廃止 START
+                            '//                         If ServerFile.TimeStamp > ClientFile.TimeStamp Or ServerFile.Size <> ClientFile.Size Then
                             'タイムスタンプは、年月日時分まで比較する（秒は比較しない）
                             If ServerFile.TimeStamp.Substring(0, 12) > ClientFile.TimeStamp.Substring(0, 12) _
                             Or ServerFile.Size <> ClientFile.Size Then
-'// MOD 2007.11.28 東都）高木 タイムスタンプの秒比較廃止 END
-'// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 START
-'// MOD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 START
-'//                             If Not( ServerFile.FileName.Equals("AutoUpGradeUtility.dll") _
-'//                                And  ServerFile.TimeStamp.Substring(0,8).Equals("20081014")) Then
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                             If Not (ServerFile.FileName.Equals("AutoUpGradeUtility.dll") _
-'//                                And gbInitProxyExists _
-'//                                And ServerFile.TimeStamp.Substring(0, 8).Equals("20081014")) Then
+                                '// MOD 2007.11.28 東都）高木 タイムスタンプの秒比較廃止 END
+                                '// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 START
+                                '// MOD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 START
+                                '//                             If Not( ServerFile.FileName.Equals("AutoUpGradeUtility.dll") _
+                                '//                                And  ServerFile.TimeStamp.Substring(0,8).Equals("20081014")) Then
+                                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                                '//                             If Not (ServerFile.FileName.Equals("AutoUpGradeUtility.dll") _
+                                '//                                And gbInitProxyExists _
+                                '//                                And ServerFile.TimeStamp.Substring(0, 8).Equals("20081014")) Then
                                 If Not (ServerFile.FileName.Equals("AutoUpGradeUtility.dll") _
                                    And gbInitProxyExists _
                                    And (ServerFile.TimeStamp.Substring(0, 8).Equals("20081014") _
                                      Or ServerFile.TimeStamp.Substring(0, 8).Equals("20091019"))) Then
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
-'// MOD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 END
-'// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 END
+                                    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                                    '// MOD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 END
+                                    '// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 END
                                     'バージョンが違う場合ダウンロードを行う
                                     With _myLogRecord
                                         .Target = ServerFile.FileName & "の最新バージョンをダウンロードします"
@@ -1196,35 +1215,35 @@ Public Class AutoUpGradeUtility
                                         'ダウンロードに失敗した場合は起動を行わない
                                         Return False
                                     End If
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
+                                    '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
                                     DeleteCabFlagFile(ServerFile.FileName)
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
-'// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 START
+                                    '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
+                                    '// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 START
                                 End If
-'// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 END
-'// ADD 2005.07.22 東都）小童谷 START
+                                '// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 END
+                                '// ADD 2005.07.22 東都）小童谷 START
                             Else
                                 appFile = System.IO.Path.Combine(_DestinationAppPath, ClientFile.FileName)
                                 If System.IO.File.Exists(appFile) Then
-'// ADD 2007.10.26 東都）高木 ＣＡＢ対象のファイルはサイズ比較は行わない START
+                                    '// ADD 2007.10.26 東都）高木 ＣＡＢ対象のファイルはサイズ比較は行わない START
                                     If ClientFile.FileName <> "IS2Client.exe" _
                                     And ClientFile.FileName <> "is2AdminClient.exe" Then
-'// ADD 2007.10.26 東都）高木 ＣＡＢ対象のファイルはサイズ比較は行わない END
-'// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 START
-'// MOD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 START
-'//                                     If Not( ServerFile.FileName.Equals("AutoUpGradeUtility.dll") _
-'//                                        And  ServerFile.TimeStamp.Substring(0,8).Equals("20081014")) Then
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//                                     If Not (ServerFile.FileName.Equals("AutoUpGradeUtility.dll") _
-'//                                        And gbInitProxyExists _
-'//                                        And ServerFile.TimeStamp.Substring(0, 8).Equals("20081014")) Then
+                                        '// ADD 2007.10.26 東都）高木 ＣＡＢ対象のファイルはサイズ比較は行わない END
+                                        '// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 START
+                                        '// MOD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 START
+                                        '//                                     If Not( ServerFile.FileName.Equals("AutoUpGradeUtility.dll") _
+                                        '//                                        And  ServerFile.TimeStamp.Substring(0,8).Equals("20081014")) Then
+                                        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                                        '//                                     If Not (ServerFile.FileName.Equals("AutoUpGradeUtility.dll") _
+                                        '//                                        And gbInitProxyExists _
+                                        '//                                        And ServerFile.TimeStamp.Substring(0, 8).Equals("20081014")) Then
                                         If Not (ServerFile.FileName.Equals("AutoUpGradeUtility.dll") _
                                            And gbInitProxyExists _
                                            And (ServerFile.TimeStamp.Substring(0, 8).Equals("20081014") _
                                              Or ServerFile.TimeStamp.Substring(0, 8).Equals("20091019"))) Then
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
-'// MOD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 END
-'// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 END
+                                            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                                            '// MOD 2009.10.03 東都）高木 [proxy.ini]が存在しない時、プロキシβ版機能停止 END
+                                            '// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 END
                                             'ダウンロードに失敗した場合
                                             Dim appfs As System.IO.FileStream = New System.IO.FileStream(appFile, System.IO.FileMode.Open)
                                             appSize = appfs.Length
@@ -1241,16 +1260,16 @@ Public Class AutoUpGradeUtility
                                                     'ダウンロードに失敗した場合は起動を行わない
                                                     Return False
                                                 End If
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
+                                                '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
                                                 DeleteCabFlagFile(ServerFile.FileName)
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
+                                                '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
                                             End If
-'// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 START
+                                            '// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 START
                                         End If
-'// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 END
-'// ADD 2007.10.26 東都）高木 ＣＡＢ対象のファイルはサイズ比較は行わない START
+                                        '// MOD 2009.08.05 東都）高木 ブリヂストン様暫定対応 END
+                                        '// ADD 2007.10.26 東都）高木 ＣＡＢ対象のファイルはサイズ比較は行わない START
                                     End If
-'// ADD 2007.10.26 東都）高木 ＣＡＢ対象のファイルはサイズ比較は行わない END
+                                    '// ADD 2007.10.26 東都）高木 ＣＡＢ対象のファイルはサイズ比較は行わない END
                                 Else
                                     With _myLogRecord
                                         .Target = ServerFile.FileName & "の最新バージョンをダウンロードします"
@@ -1263,11 +1282,11 @@ Public Class AutoUpGradeUtility
                                         'ダウンロードに失敗した場合は起動を行わない
                                         Return False
                                     End If
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
+                                    '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
                                     DeleteCabFlagFile(ServerFile.FileName)
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
+                                    '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
                                 End If
-'// ADD 2005.07.22 東都）小童谷 END
+                                '// ADD 2005.07.22 東都）小童谷 END
                             End If
                             verRet = True
                         End If
@@ -1284,9 +1303,9 @@ Public Class AutoUpGradeUtility
                             'ダウンロードに失敗した場合は起動を行わない
                             Return False
                         End If
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
+                        '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
                         DeleteCabFlagFile(ServerFile.FileName)
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
+                        '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
                         verRet = True
                     Else
                         With _myLogRecord
@@ -1309,17 +1328,17 @@ Public Class AutoUpGradeUtility
                         'ダウンロードに失敗した場合は起動を行わない
                         Return False
                     End If
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
+                    '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
                     DeleteCabFlagFile(ServerFile.FileName)
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
+                    '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
                 End If
 
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
+                '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 START
                 If ServerFile.FileName.Substring(ServerFile.FileName.LastIndexOf(".") + 1).Equals("txt") Then
-'// ADD 2007.10.12 東都）高木 ＣＡＢファイルの解凍 START
+                    '// ADD 2007.10.12 東都）高木 ＣＡＢファイルの解凍 START
                     ChangeFileStamp(ServerFile.FileName, ServerFile.TimeStamp)
                     CheckCabVerFile(sourceDirName, ServerFile.FileName)
-'// ADD 2007.10.12 東都）高木 ＣＡＢファイルの解凍 END
+                    '// ADD 2007.10.12 東都）高木 ＣＡＢファイルの解凍 END
 
                     ' ＣＡＢファイルが存在し、CABフラグファイルがなければ、解凍をする
                     Dim srcFullName, flgFullName As String
@@ -1334,7 +1353,7 @@ Public Class AutoUpGradeUtility
                         fsflg.Close()
                     End If
                 End If
-'// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
+                '// ADD 2007.10.05 東都）高木 ＣＡＢファイルの解凍 END
 
                 ' 処理カウントを1ステップ進める
                 iCount = iCount + 1
@@ -1361,11 +1380,11 @@ Public Class AutoUpGradeUtility
             For Each localFileName In localFileList
                 localCheck = False
                 For Each ServerFile In ServerVersion
-'// MOD 2005.05.10 東都）高木 ファイル名比較の変更 START
-'//                 If ServerFile.FileName.Replace("\", "/").Equals(localFileName.Substring(_DestinationAppPath.Length + 1).Replace("\", "/")) Then
+                    '// MOD 2005.05.10 東都）高木 ファイル名比較の変更 START
+                    '//                 If ServerFile.FileName.Replace("\", "/").Equals(localFileName.Substring(_DestinationAppPath.Length + 1).Replace("\", "/")) Then
                     If ServerFile.FileName.Replace("\", "/").ToUpper().Equals( _
                             localFileName.Substring(_DestinationAppPath.Length + 1).Replace("\", "/").ToUpper()) Then
-'// MOD 2005.05.10 東都）高木 ファイル名比較の変更 END
+                        '// MOD 2005.05.10 東都）高木 ファイル名比較の変更 END
                         localCheck = True
                     End If
                 Next
@@ -1405,18 +1424,18 @@ Public Class AutoUpGradeUtility
         Dim myRet As Boolean
         Dim myAppDom As AppDomain
 
-'// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない START
-'//     'アプリケーションドメインの設定
-'//     myAppDom = GetAppDomain(sourceFileName, localExecute)
-'//     If myAppDom Is Nothing Then Return False
-'// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない END
-'// ADD 2007.11.29 東都）高木 明示的ガベージコレクトを行う START
+        '// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない START
+        '//     'アプリケーションドメインの設定
+        '//     myAppDom = GetAppDomain(sourceFileName, localExecute)
+        '//     If myAppDom Is Nothing Then Return False
+        '// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない END
+        '// ADD 2007.11.29 東都）高木 明示的ガベージコレクトを行う START
         GC.Collect()    'メモリークリーンアップ
-'// ADD 2007.11.29 東都）高木 明示的ガベージコレクトを行う END
+        '// ADD 2007.11.29 東都）高木 明示的ガベージコレクトを行う END
 
-'// ADD 2009.07.30 東都）高木 exeのdll化対応 START
-'//     'アプリケーションの実行
-'//     myRet = Execute(myAppDom, sourceFileName, cmdPara, localExecute)
+        '// ADD 2009.07.30 東都）高木 exeのdll化対応 START
+        '//     'アプリケーションの実行
+        '//     myRet = Execute(myAppDom, sourceFileName, cmdPara, localExecute)
         Dim sDllFileName As String = ""
         Dim sDllFlagName As String = ""
         sDllFileName = sourceFileName.Substring(0, sourceFileName.Length - 4) + ".dll"
@@ -1428,9 +1447,12 @@ Public Class AutoUpGradeUtility
             myRet = ExecuteDll(sDllFileName, cmdPara)
         Else
             '//ＥＸＥの呼び出し
+            '// ADD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+            myAppDom = Nothing
+            '// ADD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
             myRet = Execute(myAppDom, sourceFileName, cmdPara, localExecute)
         End If
-'// ADD 2009.07.30 東都）高木 exeのdll化対応 END
+        '// ADD 2009.07.30 東都）高木 exeのdll化対応 END
         Return myRet
     End Function
 
@@ -1475,13 +1497,13 @@ Public Class AutoUpGradeUtility
             myRet = GetFile(sourceFileName, fileDir, download, localExecute, myFileCopy)
             If myRet = False Then Return False
 
-'// DEL 2007.11.29 東都）高木 アセンブリダウンロードは負荷がかかるので行わない START
-'//         'アセンブリの参照アセンブリをダウンロード
-'//         If download And sourceFileName.Substring(sourceFileName.LastIndexOf(".") + 1).Equals("exe") Then
-'//             myRet = CheckAssemblies()
-'//             GC.Collect()    'メモリークリーンアップ
-'//         End If
-'// DEL 2007.11.29 東都）高木 アセンブリダウンロードは負荷がかかるので行わない END
+            '// DEL 2007.11.29 東都）高木 アセンブリダウンロードは負荷がかかるので行わない START
+            '//         'アセンブリの参照アセンブリをダウンロード
+            '//         If download And sourceFileName.Substring(sourceFileName.LastIndexOf(".") + 1).Equals("exe") Then
+            '//             myRet = CheckAssemblies()
+            '//             GC.Collect()    'メモリークリーンアップ
+            '//         End If
+            '// DEL 2007.11.29 東都）高木 アセンブリダウンロードは負荷がかかるので行わない END
 
             'ダウンロードのみ
             If downloadOnly Then
@@ -1595,7 +1617,7 @@ Public Class AutoUpGradeUtility
         'アプリケーションドメインの設定
         myAppSetup = New AppDomainSetup
         myAppSetup.ConfigurationFile = Path.Combine(_DestinationAppPath, sourceFileName) & constConfigExt
-'//     myAppSetup.ConfigurationFile = Path.Combine(_DestinationConfigPath, sourceFileName) & constConfigExt
+        '//     myAppSetup.ConfigurationFile = Path.Combine(_DestinationConfigPath, sourceFileName) & constConfigExt
         myAppSetup.ShadowCopyFiles = "true"
         If localExecute Then
             If Not File.Exists(Path.Combine(_DestinationAppPath, sourceFileName)) Then
@@ -1627,10 +1649,10 @@ Public Class AutoUpGradeUtility
                             ByVal sourceFileName As String, _
                             ByVal cmdPara() As String, _
                             ByVal localExecute As Boolean) As Boolean
-'// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない START
-'//     Dim myName As String = myAppDom.FriendlyName
+        '// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない START
+        '//     Dim myName As String = myAppDom.FriendlyName
         Dim myName As String = " "
-'// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない END
+        '// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない END
 
         'カレントディレクトリの変更
         'System.IO.Directory.SetCurrentDirectory(_DestinationAppPath)
@@ -1646,7 +1668,7 @@ Public Class AutoUpGradeUtility
                 End With
                 _myLog.WriteLog(_myLogRecord)
                 'myAppDom.ExecuteAssembly(Path.Combine(_DestinationAppPath, sourceFileName), myAppDom.Evidence, cmdPara)
-'// MOD 2005.05.31 東都）伊賀 スレッドを廃止 START
+                '// MOD 2005.05.31 東都）伊賀 スレッドを廃止 START
                 'スレッドを作成し、開始する
                 Dim process As New System.Diagnostics.Process
 
@@ -1655,9 +1677,9 @@ Public Class AutoUpGradeUtility
                     .Arguments = cmdPara(0) ' コマンドライン引数
                     .WorkingDirectory = _DestinationAppPath ' 作業ディレクトリ
                     .FileName = Path.Combine(_DestinationAppPath, sourceFileName) ' 実行するファイル (*.exeでなくても良い)
-'// ADD 2008.06.11 東都）高木 ログイン画面を常にノーマル表示に START
+                    '// ADD 2008.06.11 東都）高木 ログイン画面を常にノーマル表示に START
                     .WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal
-'// ADD 2008.06.11 東都）高木 ログイン画面を常にノーマル表示に END
+                    '// ADD 2008.06.11 東都）高木 ログイン画面を常にノーマル表示に END
                 End With
                 Try
                     process.Start()
@@ -1670,7 +1692,7 @@ Public Class AutoUpGradeUtility
                     'その他
 
                 End Try
-'// MOD 2005.05.31 東都）伊賀 スレッドを廃止 END
+                '// MOD 2005.05.31 東都）伊賀 スレッドを廃止 END
             Else
                 With _myLogRecord
                     .Target = myName & "で" & sourceFileName & "を実行を行います"
@@ -1678,9 +1700,9 @@ Public Class AutoUpGradeUtility
                     .Remark = ""
                 End With
                 _myLog.WriteLog(_myLogRecord)
-'// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない START
-'//             myAppDom.ExecuteAssembly(sourceFileName)
-'// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない END
+                '// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない START
+                '//             myAppDom.ExecuteAssembly(sourceFileName)
+                '// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない END
             End If
             With _myLogRecord
                 .Status = "終了"
@@ -1700,22 +1722,22 @@ Public Class AutoUpGradeUtility
             _myLog.WriteLog(_myLogRecord)
             Return False
         Finally
-'// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない START
-'//         AppDomain.Unload(myAppDom)
-'// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない START
-'// MOD 2005.05.31 東都）伊賀 スレッドを廃止 START
+            '// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない START
+            '//         AppDomain.Unload(myAppDom)
+            '// DEL 2007.11.29 東都）高木 アプリケーションドメインの設定は負荷がかかるので行わない START
+            '// MOD 2005.05.31 東都）伊賀 スレッドを廃止 START
             Dim process As New System.Diagnostics.Process
 
             With process.StartInfo
-                .Arguments = _ClientMutex ' コマンドライン引数
+                .Arguments = gClientMutex ' コマンドライン引数
                 .WorkingDirectory = _DestinationPath ' 作業ディレクトリ
-'// MOD 2005.06.03 東都）伊賀 実行ファイルパスの変更 START
-'//             '.FileName = Path.Combine(_DestinationPath, "CopyAutoUpGrade.exe") ' 実行するファイル (*.exeでなくても良い)
+                '// MOD 2005.06.03 東都）伊賀 実行ファイルパスの変更 START
+                '//             '.FileName = Path.Combine(_DestinationPath, "CopyAutoUpGrade.exe") ' 実行するファイル (*.exeでなくても良い)
                 .FileName = Path.Combine(_DestinationAppPath, "CopyAutoUpGrade.exe") ' 実行するファイル (*.exeでなくても良い)
-'// MOD 2005.06.03 東都）伊賀 実行ファイルパスの変更 END
-'// ADD 2008.06.11 東都）高木 [CopyAutoUpGrade]を非表示に START
+                '// MOD 2005.06.03 東都）伊賀 実行ファイルパスの変更 END
+                '// ADD 2008.06.11 東都）高木 [CopyAutoUpGrade]を非表示に START
                 .WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
-'// ADD 2008.06.11 東都）高木 [CopyAutoUpGrade]を非表示に END
+                '// ADD 2008.06.11 東都）高木 [CopyAutoUpGrade]を非表示に END
             End With
             Try
                 process.Start()
@@ -1728,7 +1750,7 @@ Public Class AutoUpGradeUtility
                 'その他
 
             End Try
-'// MOD 2005.05.31 東都）伊賀 スレッドを廃止 END
+            '// MOD 2005.05.31 東都）伊賀 スレッドを廃止 END
 
             'カレントディレクトリの変更
             'System.IO.Directory.SetCurrentDirectory(_DestinationPath)
@@ -1767,7 +1789,7 @@ Public Class AutoUpGradeUtility
         Return myRet
     End Function
 
-'// ADD 2007.06.15 東都）高木 ＣＡＢファイルの解凍 START
+    '// ADD 2007.06.15 東都）高木 ＣＡＢファイルの解凍 START
     '       
     '   ＣＡＢファイルの解凍する
     '       
@@ -1789,17 +1811,17 @@ Public Class AutoUpGradeUtility
             .Arguments = " -r """ + cabFile + """" + " """ + extractDir + """" ' コマンドライン引数
             .WorkingDirectory = extractDir ' 作業ディレクトリ
             .FileName = "EXPAND.EXE"  ' 実行するファイル (*.exeでなくても良い)
-'// ADD 2008.06.11 東都）高木 [EXPAND]を非表示に START
+            '// ADD 2008.06.11 東都）高木 [EXPAND]を非表示に START
             '            .WindowStyle = ProcessWindowStyle.Minimized
             .WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
-'// ADD 2008.06.11 東都）高木 [EXPAND]を非表示に END
+            '// ADD 2008.06.11 東都）高木 [EXPAND]を非表示に END
         End With
 
         Try
             process.Start()
-'// ADD 2007.06.21 東都）高木 プロセスの終了を待つ START
+            '// ADD 2007.06.21 東都）高木 プロセスの終了を待つ START
             process.WaitForExit(25000) 'プロセス終了するか25秒経過するまで待つ
-'// ADD 2007.06.21 東都）高木 プロセスの終了を待つ END
+            '// ADD 2007.06.21 東都）高木 プロセスの終了を待つ END
             myRet = True
 
         Catch ex As System.ComponentModel.Win32Exception
@@ -1826,8 +1848,8 @@ Public Class AutoUpGradeUtility
 
         Return myRet
     End Function
-'// ADD 2007.06.15 東都）高木 ＣＡＢファイルの解凍 END
-'// ADD 2009.07.29 東都）高木 プロキシ対応 START
+    '// ADD 2007.06.15 東都）高木 ＣＡＢファイルの解凍 END
+    '// ADD 2009.07.29 東都）高木 プロキシ対応 START
     '
     '   ＩＥのプロキシの設定内容をレジストリから取得
     '
@@ -1845,10 +1867,10 @@ Public Class AutoUpGradeUtility
             If Not (regkey.GetValue("AutoConfigURL") Is Nothing) Then
                 sAutoConfigURL = CType(regkey.GetValue("AutoConfigURL"), String)
                 With _myLogRecord
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
-'//                 .Target = "R AC[" & 暗号化２(CType(regkey.GetValue("AutoConfigURL"), String)) & "]"
+                    '// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
+                    '//                 .Target = "R AC[" & 暗号化２(CType(regkey.GetValue("AutoConfigURL"), String)) & "]"
                     .Target = "R AC[" & CType(regkey.GetValue("AutoConfigURL"), String) & "]"
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
+                    '// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
                     .Result = ""
                     .Remark = ""
                 End With
@@ -1861,10 +1883,10 @@ Public Class AutoUpGradeUtility
             If Not (regkey.GetValue("ProxyEnable") Is Nothing) Then
                 iProxyEnable = CType(regkey.GetValue("ProxyEnable"), Integer)
                 With _myLogRecord
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
-'//                 .Target = "R PE[" & 暗号化２(iProxyEnable.ToString()) & "]"
+                    '// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
+                    '//                 .Target = "R PE[" & 暗号化２(iProxyEnable.ToString()) & "]"
                     .Target = "R PE[" & iProxyEnable.ToString() & "]"
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
+                    '// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
                     .Result = ""
                     .Remark = ""
                 End With
@@ -1874,10 +1896,10 @@ Public Class AutoUpGradeUtility
             If Not (regkey.GetValue("ProxyServer") Is Nothing) Then
                 sProxyServer = CType(regkey.GetValue("ProxyServer"), String).Split(";")
                 With _myLogRecord
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
-'//                 .Target = "R PS[" & 暗号化２(CType(regkey.GetValue("ProxyServer"), String)) & "]"
+                    '// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
+                    '//                 .Target = "R PS[" & 暗号化２(CType(regkey.GetValue("ProxyServer"), String)) & "]"
                     .Target = "R PS[" & CType(regkey.GetValue("ProxyServer"), String) & "]"
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
+                    '// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
                     .Result = ""
                     .Remark = ""
                 End With
@@ -1888,10 +1910,10 @@ Public Class AutoUpGradeUtility
             If Not (regkey.GetValue("ProxyOverride") Is Nothing) Then
                 sProxyOverride = CType(regkey.GetValue("ProxyOverride"), String).Split(";")
                 With _myLogRecord
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
-'//                 .Target = "R PO[" & 暗号化２(CType(regkey.GetValue("ProxyOverride"), String)) & "]"
+                    '// MOD 2010.06.21 東都）高木 ログの暗号化解除 START
+                    '//                 .Target = "R PO[" & 暗号化２(CType(regkey.GetValue("ProxyOverride"), String)) & "]"
                     .Target = "R PO[" & CType(regkey.GetValue("ProxyOverride"), String) & "]"
-'// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
+                    '// MOD 2010.06.21 東都）高木 ログの暗号化解除 END
                     .Result = ""
                     .Remark = ""
                 End With
@@ -1945,26 +1967,30 @@ Public Class AutoUpGradeUtility
     '
     '   デフォルトプロキシの設定を行う
     '
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'// Private Function デフォルトプロキシ設定() As Integer
+    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+    '// Private Function デフォルトプロキシ設定() As Integer
     Private Function デフォルトプロキシ設定() As WebExceptionStatus
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
         '
         '   デフォルトプロキシの設定を行う
         '
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//     Dim iRet As Integer = 0
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+        '//     Dim iRet As Integer = 0
         Dim wRet As WebExceptionStatus = WebExceptionStatus.UnknownError
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
         Try
-            System.Net.GlobalProxySelection.Select = System.Net.WebProxy.GetDefaultProxy()
-            sv_init.Proxy = System.Net.WebProxy.GetDefaultProxy()
+            '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+            '//System.Net.GlobalProxySelection.Select = System.Net.WebProxy.GetDefaultProxy()
+            System.Net.WebRequest.DefaultWebProxy = System.Net.WebRequest.GetSystemWebProxy()
+            '//sv_init.Proxy = System.Net.WebProxy.GetDefaultProxy()
+            sv_init.Proxy = System.Net.WebRequest.GetSystemWebProxy()
+            '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
 
             Dim sRet As String = sv_init.wakeupDB()
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//         iRet = 1
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+            '//         iRet = 1
             wRet = WebExceptionStatus.Success
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
         Catch ex As System.Net.WebException
             With _myLogRecord
                 .Target = "P設定(D) WebException:" & ex.Status.ToString()
@@ -1973,24 +1999,24 @@ Public Class AutoUpGradeUtility
             End With
             _myLog.WriteLog(_myLogRecord)
 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//         iRet = -1
-'//         Select Case ex.Status
-'//             Case WebExceptionStatus.NameResolutionFailure
-'//                 iRet = -11
-'//             Case WebExceptionStatus.Timeout
-'//                 iRet = -12
-'//             Case WebExceptionStatus.TrustFailure
-'//                 iRet = -13
-'//             Case WebExceptionStatus.ConnectFailure
-'//                 iRet = -14
-'//             Case Else
-'//                 iRet = -19
-'//         End Select
-'//         Return iRet
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+            '//         iRet = -1
+            '//         Select Case ex.Status
+            '//             Case WebExceptionStatus.NameResolutionFailure
+            '//                 iRet = -11
+            '//             Case WebExceptionStatus.Timeout
+            '//                 iRet = -12
+            '//             Case WebExceptionStatus.TrustFailure
+            '//                 iRet = -13
+            '//             Case WebExceptionStatus.ConnectFailure
+            '//                 iRet = -14
+            '//             Case Else
+            '//                 iRet = -19
+            '//         End Select
+            '//         Return iRet
             wRet = ex.Status
             Return wRet
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
         Catch ex As Exception
             With _myLogRecord
                 .Target = "P設定(D) Exception:"
@@ -1999,39 +2025,39 @@ Public Class AutoUpGradeUtility
             End With
             _myLog.WriteLog(_myLogRecord)
 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//         iRet = -2
-'//         Return iRet
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+            '//         iRet = -2
+            '//         Return iRet
             wRet = WebExceptionStatus.UnknownError
             Return wRet
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
         End Try
 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//     Return iRet
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+        '//     Return iRet
         Return wRet
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
     End Function
 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'// Private Function プロキシ設定(ByVal sProxyAdr As String, ByVal iProxyNo As Integer) As Integer
+    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+    '// Private Function プロキシ設定(ByVal sProxyAdr As String, ByVal iProxyNo As Integer) As Integer
     Private Function プロキシ設定(ByVal sProxyAdr As String, ByVal iProxyNo As Integer) As WebExceptionStatus
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
         Return プロキシ設定２(sProxyAdr, iProxyNo, "", "")
     End Function
 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'// Private Function プロキシ設定２(ByVal sProxyAdr As String, ByVal iProxyNo As Integer _
-'//         , ByVal sProxyId As String, ByVal sProxyPa As String) As Integer
+    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+    '// Private Function プロキシ設定２(ByVal sProxyAdr As String, ByVal iProxyNo As Integer _
+    '//         , ByVal sProxyId As String, ByVal sProxyPa As String) As Integer
     Private Function プロキシ設定２(ByVal sProxyAdr As String, ByVal iProxyNo As Integer _
             , ByVal sProxyId As String, ByVal sProxyPa As String) As WebExceptionStatus
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//     Dim iRet As Integer = 0
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+        '//     Dim iRet As Integer = 0
         Dim wRet As WebExceptionStatus = WebExceptionStatus.UnknownError
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
         Try
             If sProxyAdr.Length > 0 Then
                 If iProxyNo > 0 Then
@@ -2039,34 +2065,41 @@ Public Class AutoUpGradeUtility
                 Else
                     gProxy = New System.Net.WebProxy(sProxyAdr)
                 End If
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
                 If sProxyId.Length > 0 Then
                     gProxy.Credentials = New NetworkCredential(sProxyId, sProxyPa)
                 End If
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
-                System.Net.GlobalProxySelection.Select = gProxy
+                '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+                '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+                '// System.Net.GlobalProxySelection.Select = gProxy
+                System.Net.WebRequest.DefaultWebProxy = gProxy
+                '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
                 sv_init.Proxy = gProxy
             Else
-                System.Net.GlobalProxySelection.Select = System.Net.GlobalProxySelection.GetEmptyWebProxy()
-                sv_init.Proxy = System.Net.GlobalProxySelection.GetEmptyWebProxy()
+                '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+                '//System.Net.GlobalProxySelection.Select = System.Net.GlobalProxySelection.GetEmptyWebProxy()
+                System.Net.WebRequest.DefaultWebProxy = Nothing
+                '//sv_init.Proxy = System.Net.GlobalProxySelection.GetEmptyWebProxy()
+                sv_init.Proxy = Nothing
+                '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
             End If
 
-'//			try
+            '//			try
             Dim sRet As String = sv_init.wakeupDB()
-'//			catch ex as Exception
-'//				With _myLogRecord
-'//					.Target = "プロキシ設定 Exception:"
-'//					.Result = "NG"
-'//					.Remark = ex.Message
-'//				End With
-'//				_myLog.WriteLog(_myLogRecord)
-'//				return false
-'//			end try
+            '//			catch ex as Exception
+            '//				With _myLogRecord
+            '//					.Target = "プロキシ設定 Exception:"
+            '//					.Result = "NG"
+            '//					.Remark = ex.Message
+            '//				End With
+            '//				_myLog.WriteLog(_myLogRecord)
+            '//				return false
+            '//			end try
 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//         iRet = 1
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+            '//         iRet = 1
             wRet = WebExceptionStatus.Success
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
         Catch ex As System.Net.WebException
             With _myLogRecord
                 .Target = "P設定( ) WebException:" & ex.Status.ToString()
@@ -2076,26 +2109,31 @@ Public Class AutoUpGradeUtility
             _myLog.WriteLog(_myLogRecord)
 
             '//元の状態に戻す
-            System.Net.GlobalProxySelection.Select = System.Net.WebProxy.GetDefaultProxy()
-            sv_init.Proxy = System.Net.WebProxy.GetDefaultProxy()
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//         iRet = -1
-'//         Select Case ex.Status
-'//             Case WebExceptionStatus.NameResolutionFailure
-'//                 iRet = -11
-'//             Case WebExceptionStatus.Timeout
-'//                 iRet = -12
-'//             Case WebExceptionStatus.TrustFailure
-'//                 iRet = -13
-'//             Case WebExceptionStatus.ConnectFailure
-'//                 iRet = -14
-'//             Case Else
-'//                 iRet = -19
-'//         End Select
-'//         Return iRet
+            '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+            '//System.Net.GlobalProxySelection.Select = System.Net.WebProxy.GetDefaultProxy()
+            System.Net.WebRequest.DefaultWebProxy = System.Net.WebRequest.GetSystemWebProxy()
+            '//sv_init.Proxy = System.Net.WebProxy.GetDefaultProxy()
+            sv_init.Proxy = System.Net.WebRequest.GetSystemWebProxy()
+            '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
+
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+            '//         iRet = -1
+            '//         Select Case ex.Status
+            '//             Case WebExceptionStatus.NameResolutionFailure
+            '//                 iRet = -11
+            '//             Case WebExceptionStatus.Timeout
+            '//                 iRet = -12
+            '//             Case WebExceptionStatus.TrustFailure
+            '//                 iRet = -13
+            '//             Case WebExceptionStatus.ConnectFailure
+            '//                 iRet = -14
+            '//             Case Else
+            '//                 iRet = -19
+            '//         End Select
+            '//         Return iRet
             wRet = ex.Status
             Return wRet
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
         Catch ex As Exception
             With _myLogRecord
                 .Target = "P設定( ) Exception:"
@@ -2105,73 +2143,78 @@ Public Class AutoUpGradeUtility
             _myLog.WriteLog(_myLogRecord)
 
             '//元の状態に戻す
-            System.Net.GlobalProxySelection.Select = System.Net.WebProxy.GetDefaultProxy()
-            sv_init.Proxy = System.Net.WebProxy.GetDefaultProxy()
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//         iRet = -2
-'//         Return iRet
+            '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 START
+            '//System.Net.GlobalProxySelection.Select = System.Net.WebProxy.GetDefaultProxy()
+            System.Net.WebRequest.DefaultWebProxy = System.Net.WebRequest.GetSystemWebProxy()
+            '//sv_init.Proxy = System.Net.WebProxy.GetDefaultProxy()
+            sv_init.Proxy = System.Net.WebRequest.GetSystemWebProxy()
+            '// MOD 2016.09.16 Vivouac）菊池 Visual Studio 2013変換に伴う修正 END
+
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+            '//         iRet = -2
+            '//         Return iRet
             wRet = WebExceptionStatus.UnknownError
             Return wRet
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+            '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
         End Try
 
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
-'//     Return iRet
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+        '//     Return iRet
         Return wRet
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+        '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
     End Function
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
+    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 START
     '
     '   接続エラーメッセージの編集
     '
     Function 接続エラーメッセージ編集(wStatus As WebExceptionStatus) As String
         Dim sRet As String = ""
         Select Case wStatus
-           Case WebExceptionStatus.ConnectFailure
-				'// プロキシサーバ設定エラー
+            Case WebExceptionStatus.ConnectFailure
+                '// プロキシサーバ設定エラー
                 sRet = "原因：プロキシ設定など"
-           Case WebExceptionStatus.ConnectionClosed 
+            Case WebExceptionStatus.ConnectionClosed
                 sRet = wStatus.ToString()
-           Case WebExceptionStatus.KeepAliveFailure 
+            Case WebExceptionStatus.KeepAliveFailure
                 sRet = wStatus.ToString()
-           Case WebExceptionStatus.MessageLengthLimitExceeded
+            Case WebExceptionStatus.MessageLengthLimitExceeded
                 sRet = wStatus.ToString()
-           Case WebExceptionStatus.NameResolutionFailure 
-				'// ケーブル接続エラー
-				'// プロキシポート番号設定エラー
-				'// ＤＮＳ設定エラー
+            Case WebExceptionStatus.NameResolutionFailure
+                '// ケーブル接続エラー
+                '// プロキシポート番号設定エラー
+                '// ＤＮＳ設定エラー
                 sRet = "原因：ケーブル接続、プロキシ設定、ＤＮＳ設定など"
-           Case WebExceptionStatus.Pending 
+            Case WebExceptionStatus.Pending
                 sRet = wStatus.ToString()
-           Case WebExceptionStatus.PipelineFailure 
+            Case WebExceptionStatus.PipelineFailure
                 sRet = wStatus.ToString()
-           Case WebExceptionStatus.ProtocolError 
+            Case WebExceptionStatus.ProtocolError
                 sRet = wStatus.ToString()
-           Case WebExceptionStatus.ProxyNameResolutionFailure 
+            Case WebExceptionStatus.ProxyNameResolutionFailure
                 sRet = wStatus.ToString()
-           Case WebExceptionStatus.ReceiveFailure 
+            Case WebExceptionStatus.ReceiveFailure
                 sRet = wStatus.ToString()
-           Case WebExceptionStatus.RequestCanceled 
+            Case WebExceptionStatus.RequestCanceled
                 sRet = wStatus.ToString()
-           Case WebExceptionStatus.SecureChannelFailure 
+            Case WebExceptionStatus.SecureChannelFailure
                 sRet = wStatus.ToString()
-           Case WebExceptionStatus.SendFailure 
+            Case WebExceptionStatus.SendFailure
                 sRet = wStatus.ToString()
-           Case WebExceptionStatus.ServerProtocolViolation 
+            Case WebExceptionStatus.ServerProtocolViolation
                 sRet = wStatus.ToString()
-           Case WebExceptionStatus.Success 
+            Case WebExceptionStatus.Success
                 sRet = "接続成功"
-           Case WebExceptionStatus.Timeout 
+            Case WebExceptionStatus.Timeout
                 sRet = "タイムアウトエラー、原因：プロキシ設定など"
-           Case WebExceptionStatus.TrustFailure 
-				'// 日付設定エラー
+            Case WebExceptionStatus.TrustFailure
+                '// 日付設定エラー
                 sRet = "原因：日付設定、ＳＳＬ設定など"
-           Case WebExceptionStatus.UnknownError
+            Case WebExceptionStatus.UnknownError
                 sRet = "未定義エラー"
         End Select
-        Return sRet        
+        Return sRet
     End Function
-'// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
+    '// MOD 2010.06.21 東都）高木 プロキシ認証の追加 END
     '
     '   ＳＪＩＳチェックを行う
     '
@@ -2220,30 +2263,30 @@ Public Class AutoUpGradeUtility
             Return False
         End If
 
-'// MOD 2011.09.22 東都）高木 記号チェック廃止 START
-'//		For i As Integer = 0 To tex.Length - 1
-'//			'// [!"#$%&'()*+,]
-'//			'// [:;<=>?]
-'//			'// [[]^]
-'//			'// [{|}]
-'//			'// [\]
-'//			If (tex.Chars(i) >= "!" And tex.Chars(i) <= ",") _
-'//			 Or (tex.Chars(i) >= ":" And tex.Chars(i) <= "?") _
-'//			 Or (tex.Chars(i) >= "[" And tex.Chars(i) <= "^") _
-'//			 Or (tex.Chars(i) >= "{" And tex.Chars(i) <= "}") _
-'//			 Or (tex.Chars(i) = "\") Then
-'//				'//				MessageBox.Show(name + "に記号が入力されています","入力チェック",MessageBoxButtons.OK)
-'//				With _myLogRecord
-'//					.Target = "半角記号チェックエラー[" & name & "][" & tex & "]"
-'//					.Result = "NG"
-'//					.Remark = ""
-'//				End With
-'//				_myLog.WriteLog(_myLogRecord)
-'//
-'//				Return False
-'//			End If
-'//		Next
-'// MOD 2011.09.22 東都）高木 記号チェック廃止 END
+        '// MOD 2011.09.22 東都）高木 記号チェック廃止 START
+        '//		For i As Integer = 0 To tex.Length - 1
+        '//			'// [!"#$%&'()*+,]
+        '//			'// [:;<=>?]
+        '//			'// [[]^]
+        '//			'// [{|}]
+        '//			'// [\]
+        '//			If (tex.Chars(i) >= "!" And tex.Chars(i) <= ",") _
+        '//			 Or (tex.Chars(i) >= ":" And tex.Chars(i) <= "?") _
+        '//			 Or (tex.Chars(i) >= "[" And tex.Chars(i) <= "^") _
+        '//			 Or (tex.Chars(i) >= "{" And tex.Chars(i) <= "}") _
+        '//			 Or (tex.Chars(i) = "\") Then
+        '//				'//				MessageBox.Show(name + "に記号が入力されています","入力チェック",MessageBoxButtons.OK)
+        '//				With _myLogRecord
+        '//					.Target = "半角記号チェックエラー[" & name & "][" & tex & "]"
+        '//					.Result = "NG"
+        '//					.Remark = ""
+        '//				End With
+        '//				_myLog.WriteLog(_myLogRecord)
+        '//
+        '//				Return False
+        '//			End If
+        '//		Next
+        '// MOD 2011.09.22 東都）高木 記号チェック廃止 END
         Return True
     End Function
     '
@@ -2265,9 +2308,9 @@ Public Class AutoUpGradeUtility
             Return False
         End Try
     End Function
-'// ADD 2009.07.29 東都）高木 プロキシ対応 END
+    '// ADD 2009.07.29 東都）高木 プロキシ対応 END
 
-'// ADD 2009.07.30 東都）高木 exeのdll化対応 
+    '// ADD 2009.07.30 東都）高木 exeのdll化対応 
     '
     '   dllの実行
     '
@@ -2329,7 +2372,7 @@ Public Class AutoUpGradeUtility
             Dim process As New System.Diagnostics.Process
 
             With process.StartInfo
-                .Arguments = _ClientMutex ' コマンドライン引数
+                .Arguments = gClientMutex ' コマンドライン引数
                 .WorkingDirectory = _DestinationPath ' 作業ディレクトリ
                 .FileName = Path.Combine(_DestinationAppPath, "CopyAutoUpGrade.exe")
                 .WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden

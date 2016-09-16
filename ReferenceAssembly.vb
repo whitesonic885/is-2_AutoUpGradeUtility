@@ -144,6 +144,9 @@ Public Class ReferenceAssembly
                 End Try
             Else
                 With _myLogRecord
+                    '// MOD 2016.09.16 Vivouacj‹e’r Visual Studio 2013•ÏŠ·‚É”º‚¤C³ START
+                    ReDim myMessages(1)
+                    '// MOD 2016.09.16 Vivouacj‹e’r Visual Studio 2013•ÏŠ·‚É”º‚¤C³ END
                     myMessages(0) = fileOrAssembly
                     myMessages(1) = "‚ğƒ[ƒh‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½"
                     .Target = _myLog.AppendStrings(myMessages)

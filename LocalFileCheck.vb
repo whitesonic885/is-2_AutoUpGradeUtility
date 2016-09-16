@@ -11,7 +11,10 @@ Public Class LocalFileCheck
         _FileList = New ArrayList
     End Sub
 
-    Public ReadOnly Property GetFileList()
+    '// MOD 2016.09.16 VivouacÅjãeír Visual Studio 2013ïœä∑Ç…î∫Ç§èCê≥ START
+    '//Public ReadOnly Property GetFileList()
+    Public ReadOnly Property GetFileList() As ArrayList
+        '// MOD 2016.09.16 VivouacÅjãeír Visual Studio 2013ïœä∑Ç…î∫Ç§èCê≥ END
         Get
             Return _FileList
         End Get
@@ -22,7 +25,7 @@ Public Class LocalFileCheck
         Dim directory As String
         Dim files As String()
         Dim fileName As String
-        Dim i As Integer
+        '//Dim i As Integer
 
         files = System.IO.Directory.GetFiles(path)
         For Each fileName In files
